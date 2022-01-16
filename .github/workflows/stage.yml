@@ -20,7 +20,7 @@ jobs:
       - name: Gather data
         id: data
         run: |
-          jq -S . < "$GITHUB_EVENT_PATH"
+          jq '.head_commit.message|split("\n")[0]' < "$GITHUB_EVENT_PATH" |tee title.txt |xargs -0 printf '::set-output name=title::%s'
       - name: Fetch HTML files
         uses: actions/download-artifact@v2
         with: {name: html, path: html}
