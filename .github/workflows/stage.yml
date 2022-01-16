@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - {name: Initialize, uses: ./.github/actions/init, id: init}
+      - {name: Initialize, uses: ./.github/actions/rpooley, id: init}
       - {name: Build docs, run: make docs, env: {SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"}}
       - {name: Store HTML, uses: actions/upload-artifact@v2, with: {name: html, path: build/html/, if-no-files-found: error}}
     outputs:
