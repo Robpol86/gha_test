@@ -31,7 +31,7 @@ jobs:
       - name: Archive HTML files
         if: "!steps.data.skip"
         run: tar -czvf html.tar.gz html/
-#      - name: Create prerelease
-#        if: "!steps.data.skip"
-#        uses: softprops/action-gh-release@v1
-#        with: {prerelease: true, files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: body.txt}
+      - name: Create prerelease
+        if: "!steps.data.skip"
+        uses: softprops/action-gh-release@v1
+        with: {prerelease: true, files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: body.txt}
