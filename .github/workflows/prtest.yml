@@ -1,4 +1,4 @@
-name: Deploy to Stage
+name: PR Test
 
 on:
   push:
@@ -14,3 +14,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: jq -S . < "$GITHUB_EVENT_PATH"
+      - run: |
+          curl -fI https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/2

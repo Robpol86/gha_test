@@ -25,14 +25,17 @@ jobs:
 
   prerelease:
     runs-on: ubuntu-latest
-    needs: build
+    needs: publish
     if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
     steps:
       - name: Gather data
         id: data
         run: |
           jq -r .head_commit.message < "$GITHUB_EVENT_PATH" > message.txt
-          head -1 message.txt |grep -Eq ' \(#[0-9]+)$' || echo ::set-output name=skip::true
+          # Verify commit came from PR.
+          head -1 message.txt |tee /dev/stderr |grep -Po '(?<= \(#)[0-9]+(?=\)f$) > prnum.txt
+          test -s prnum.txt || echo ::set-output name=skip::true  # Malformed commit msg title.
+          curl -fI "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$(cat prnum.txt)" || echo ::set-output name=skip::true
           head -1 message.txt |sed 's/ (#[0-9]\+)$//' |xargs -0 printf '::set-output name=title::%s'
           tail -n+3 message.txt > body.txt
       - name: Fetch HTML files
@@ -42,6 +45,7 @@ jobs:
       - name: Archive HTML files
         if: "!steps.data.skip"
         run: tar -czvf html.tar.gz html/
+      - name: Create "-pre" tag
       - name: Create prerelease
         if: "!steps.data.skip"
         uses: softprops/action-gh-release@v1
