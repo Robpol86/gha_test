@@ -19,7 +19,8 @@ jobs:
     steps:
       - name: Gather data
         id: data
-        run: echo TODO
+        run: |
+          jq -S . < "$GITHUB_EVENT_PATH"
       - name: Fetch HTML files
         uses: actions/download-artifact@v2
         with: {name: html, path: html}
@@ -27,4 +28,4 @@ jobs:
         run: tar -czvf html.tar.gz html/
 #      - name: Create prerelease
 #        uses: softprops/action-gh-release@v1
-#        with: {prerelease: true, files: "html.tar.gz", name: "${{ steps.data.name }}", body_path: ./...txt}
+#        with: {prerelease: true, files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: ./...txt}
