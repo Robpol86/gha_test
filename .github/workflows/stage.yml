@@ -20,12 +20,18 @@ jobs:
       - name: Gather data
         id: data
         run: |
-          jq '.head_commit.message|split("\n")[0]' < "$GITHUB_EVENT_PATH" |tee title.txt |xargs -0 printf '::set-output name=title::%s'
+          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" > message.txt
+          head -1 message.txt |grep -Eq ' \(#[0-9]+)$' || echo ::set-output name=skip::true
+          head -1 message.txt |sed 's/ (#[0-9]\+)$//' |xargs -0 printf '::set-output name=title::%s'
+          tail -n+3 message.txt > body.txt
       - name: Fetch HTML files
+        if: "!steps.data.skip"
         uses: actions/download-artifact@v2
         with: {name: html, path: html}
       - name: Archive HTML files
+        if: "!steps.data.skip"
         run: tar -czvf html.tar.gz html/
 #      - name: Create prerelease
+#        if: "!steps.data.skip"
 #        uses: softprops/action-gh-release@v1
-#        with: {prerelease: true, files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: ./...txt}
+#        with: {prerelease: true, files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: body.txt}
