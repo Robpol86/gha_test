@@ -1,0 +1,16 @@
+name: Deploy to Stage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - closed
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: jq -S . < "$GITHUB_EVENT_PATH"
