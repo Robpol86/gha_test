@@ -26,30 +26,21 @@ jobs:
   prerelease:
     runs-on: ubuntu-latest
     needs: publish
-    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
+    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#') && endswith(github.event.head_commit.message, ')')"
     steps:
       - name: Gather data
         id: data
         run: |
           jq -r .head_commit.message < "$GITHUB_EVENT_PATH" > message.txt
-          # Verify commit came from PR.
-          head -1 message.txt |tee /dev/stderr |grep -Po '(?<= \(#)[0-9]+(?=\)f$) > prnum.txt
-          test -s prnum.txt || echo ::set-output name=skip::true  # Malformed commit msg title.
-          curl -fI "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$(cat prnum.txt)" || echo ::set-output name=skip::true
-          # Get data from commit message.
           head -1 message.txt |sed 's/ (#[0-9]\+)$//' |xargs -0 printf '::set-output name=title::%s'
           tail -n+3 message.txt > body.txt
-          # Determine tag name to create.
           TZ=America/Chicago git show -s --format=%cd --date=format-local:"::set-output name=tag::%Y.%m.%d-pre"
       - name: Fetch HTML files
-        if: "!steps.data.skip"
         uses: actions/download-artifact@v2
         with: {name: html, path: html}
       - name: Archive HTML files
-        if: "!steps.data.skip"
         run: tar -czvf html.tar.gz html/
       - name: Create "-pre" tag
-        if: "!steps.data.skip"
         uses: actions/github-script@v5
         with:
           script: |
@@ -60,6 +51,5 @@ jobs:
               sha: context.sha
             })
       - name: Create prerelease
-        if: "!steps.data.skip"
         uses: softprops/action-gh-release@v1
         with: {prerelease: true, tag_name: "${{ steps.data.tag }}", files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: body.txt}
