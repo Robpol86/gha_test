@@ -36,5 +36,11 @@ jobs:
           tail -n+3 message.txt > body.txt
           TZ=America/Chicago git show -s --format=%cd --date=format-local:"::set-output name=tag::%Y.%m.%d-pre"
       - run: ls -lah
-      - run: echo title ${{ steps.data.title }}
-      - run: echo tag ${{ steps.data.tag }}
+      - run: |
+          echo "title >${{ steps.data.title }}<"
+          head -1 message.txt
+          head -1 message.txt |sed 's/ (#[0-9]\+)$//'
+          head -1 message.txt |sed 's/ (#[0-9]\+)$//' |xargs -0 printf %s
+      - run: |
+          echo "tag >${{ steps.data.tag }}<"
+          TZ=America/Chicago git show -s --format=%cd --date=format-local:%Y.%m.%d
