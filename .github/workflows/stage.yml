@@ -26,7 +26,6 @@ jobs:
   prerelease:
     runs-on: ubuntu-latest
     needs: publish
-    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
     steps:
       - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
       - name: Gather data
@@ -36,21 +35,6 @@ jobs:
           head -1 message.txt |sed 's/ (#[0-9]\+)$//' |xargs -0 printf '::set-output name=title::%s'
           tail -n+3 message.txt > body.txt
           TZ=America/Chicago git show -s --format=%cd --date=format-local:"::set-output name=tag::%Y.%m.%d-pre"
-      - name: Fetch HTML files
-        uses: actions/download-artifact@v2
-        with: {name: html, path: html}
-      - name: Archive HTML files
-        run: tar -czvf html.tar.gz html/
-      - name: Create "-pre" tag
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ steps.data.tag }}',
-              sha: context.sha
-            })
-      - name: Create prerelease
-        uses: softprops/action-gh-release@v1
-        with: {prerelease: true, tag_name: "${{ steps.data.tag }}", files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: body.txt}
+      - run: ls -lah
+      - run: echo title ${{ steps.data.title }}
+      - run: echo tag ${{ steps.data.tag }}
