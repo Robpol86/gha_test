@@ -48,9 +48,14 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/${{ steps.data.tag }}',
+              ref: 'refs/tags/${{ steps.data.outputs.tag }}',
               sha: context.sha
             })
       - name: Create prerelease
         uses: softprops/action-gh-release@v1
-        with: {prerelease: true, tag_name: "${{ steps.data.tag }}", files: "html.tar.gz", name: "${{ steps.data.title }}", body_path: body.txt}
+        with:
+          body_path: body.txt
+          files: "html.tar.gz"
+          name: "${{ steps.data.outputs.title }}"
+          prerelease: true
+          tag_name: "${{ steps.data.outputs.tag }}"
