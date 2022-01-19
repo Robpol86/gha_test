@@ -34,9 +34,9 @@ jobs:
       - {name: rsync, run: "echo rsync -rptcivh --delete-after --stats html/ ${{env.NFSN_USER}}@${{env.NFSN_HOST}}:/home/public"}
       - name: Purge Cloudflare Cache
         run: |
-          curl -sS -X POST "${{env.CF_URL}}" -H "${{env.CF_AUTH}}" --data '{"purge_everything":true}' |
+          echo curl -sS -X POST "${{env.CF_URL}}" -H "${{env.CF_AUTH}}" --data '{"purge_everything":true}' |
             tee /dev/stderr |
-            grep -q '"success": true,'
+            cat
 
   archive:
     name: Archive Release
