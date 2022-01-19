@@ -1,0 +1,36 @@
+name: Deploy to Stage
+
+on:
+  push:
+
+jobs:
+
+  build:
+    name: Build HTML
+    runs-on: ubuntu-latest
+    steps:
+      - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
+      - {name: Initialize dependencies, uses: ./.github/actions/init-deps}
+      - {name: Build docs, run: make docs, env: {SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"}}
+      - {name: Store HTML, uses: actions/upload-artifact@v2, with: {name: html, path: build/html/, if-no-files-found: error}}
+
+  publish:
+    name: Publish to NFSN
+    runs-on: ubuntu-latest
+    needs: build
+    concurrency: "publish-${{ github.event_name }}"
+    env:
+      CF_AUTH: "Authorization: Bearer secrets.TOKEN_CF_PURGE_CACHE"
+      CF_URL: https://api.cloudflare.com/client/v4/zones/5efb26a03250a8bc392727af05a39aba/purge_cache
+      NFSN_HOST: ssh.phx.nearlyfreespeech.net
+      NFSN_USER: "${{ github.event_name == 'release' && 'secrets.NFSN_SSH_USER_PROD' || 'secrets.NFSN_SSH_USER_STAGE' }}"
+    steps:
+      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: html}}
+      - name: Setup SSH
+        run: echo shimataro/ssh-key-action@v2
+      - {name: rsync, run: "echo rsync -rptcivh --delete-after --stats html/ ${{env.NFSN_USER}}@${{env.NFSN_HOST}}:/home/public"}
+      - name: Purge Cloudflare Cache
+        run: |
+          echo curl -sS -X POST "${{env.CF_URL}}" -H "${{env.CF_AUTH}}" --data '{"purge_everything":true}' |
+            tee /dev/stderr |
+            cat
