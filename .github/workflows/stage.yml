@@ -25,8 +25,9 @@ jobs:
       - name: Get commit title and body
         id: commit
         run: |
-          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |head -1 |xargs -0 printf '::set-output name=title::%s'
+          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |head -1 |tee title.txt |xargs -0 printf '::set-output name=title::%s'
           jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |tail -n+3 > body.txt
+          [ -s body.txt ] || cp title.txt body.txt
       - name: Create or update prerelease
         uses: softprops/action-gh-release@v1
         with:
