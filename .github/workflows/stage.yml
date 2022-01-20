@@ -25,7 +25,7 @@ jobs:
         env: {GITHUB_TOKEN: "${{ github.token }}"}
         with: {delete_release: true, tag_name: prerelease}
       - name: Create prerelease
-        uses: softprops/action-gh-release@8a65c813553f4d05769635eb1b70180d25b9b61b  # master as of 2022-01-19  # TODO revert?
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: prerelease
           prerelease: true
