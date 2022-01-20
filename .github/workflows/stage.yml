@@ -17,7 +17,7 @@ jobs:
   build-prod:
     name: Build HTML for Production
     runs-on: ubuntu-latest
-    if: "github.ref == 'refs/heads/stage_and_prod'"  # TODO
+    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
     steps:
       - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
       - {name: Initialize dependencies, uses: ./.github/actions/init-deps}
@@ -28,7 +28,7 @@ jobs:
     name: Create Prerelease
     runs-on: ubuntu-latest
     needs: [build-stage, build-prod]
-    if: "github.ref == 'refs/heads/stage_and_prod'"  # TODO
+    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
     steps:
       - {name: Fetch Stage HTML files, uses: actions/download-artifact@v2, with: {name: html-stage, path: html-stage}}
       - {name: Fetch Prod HTML files, uses: actions/download-artifact@v2, with: {name: html-prod, path: html-prod}}
