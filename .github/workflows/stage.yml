@@ -29,7 +29,7 @@ jobs:
         with:
           tag_name: prerelease
           prerelease: true
-          target_commitish: "add_stage_again"
+          target_commitish: "${{ env.GITHUB_REF_NAME }}"
 
   publish:
     name: Publish to NFSN
