@@ -17,6 +17,7 @@ jobs:
   build-prod:
     name: Build HTML for Production
     runs-on: ubuntu-latest
+    if: "github.ref == 'refs/heads/stage_and_prod'"  # TODO
     steps:
       - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
       - {name: Initialize dependencies, uses: ./.github/actions/init-deps}
