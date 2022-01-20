@@ -48,6 +48,8 @@ testpdb:
 build/html/index.html::
 	mkdir -p $(@D)
 	echo placeholder > $@
+	rm -fv $@-*
+	touch $@-$(shell date +%Y-%m-%dT%H-%M-%S).txt
 	@echo Documentation available here: $@
 
 .PHONY: docs build
