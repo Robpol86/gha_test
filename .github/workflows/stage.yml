@@ -20,8 +20,11 @@ jobs:
     needs: build
     if: "github.ref == 'refs/heads/add_stage_again'"  # TODO /main and:  && contains(github.event.head_commit.message, ' (#')
     steps:
+      - name: Delete existing prerelease
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with: {delete_release: true, tag_name: prerelease}
       - name: Create prerelease
-        uses: softprops/action-gh-release@8a65c813553f4d05769635eb1b70180d25b9b61b  # master as of 2022-01-19
+        uses: softprops/action-gh-release@8a65c813553f4d05769635eb1b70180d25b9b61b  # master as of 2022-01-19  # TODO revert?
         with:
           tag_name: prerelease
           prerelease: true
