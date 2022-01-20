@@ -30,10 +30,10 @@ jobs:
     needs: [build-stage, build-prod]
     if: "github.ref == 'refs/heads/stage_and_prod'"  # TODO
     steps:
-      - {name: Fetch Stage HTML files, uses: actions/download-artifact@v2, with: {name: html-stage, path: html}}
-      - {name: Archive Stage HTML files, run: tar -czvf html-stage.tar.gz html/ && rm -r $_}
-      - {name: Fetch Prod HTML files, uses: actions/download-artifact@v2, with: {name: html-prod, path: html}}
-      - {name: Archive Prod HTML files, run: tar -czvf html-prod.tar.gz html/ && rm -r $_}
+      - {name: Fetch Stage HTML files, uses: actions/download-artifact@v2, with: {name: html-stage, path: html-stage}}
+      - {name: Fetch Prod HTML files, uses: actions/download-artifact@v2, with: {name: html-prod, path: html-prod}}
+      - {name: Archive Stage HTML files, run: mv html-stage html && tar -czvf html-stage.tar.gz $_ && rm -r html}
+      - {name: Archive Prod HTML files, run: mv html-prod html && tar -czvf html-prod.tar.gz $_}
       - name: Get commit title and body
         id: commit
         run: |
