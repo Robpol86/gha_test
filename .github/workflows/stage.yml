@@ -20,6 +20,8 @@ jobs:
     needs: build
     if: "github.ref == 'refs/heads/add_stage_again'"  # TODO /main and:  && contains(github.event.head_commit.message, ' (#')
     steps:
+      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: html}}
+      - {name: Archive HTML files, run: tar -czvf html.tar.gz html/}
       - name: Delete existing prerelease
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         env: {GITHUB_TOKEN: "${{ github.token }}"}
@@ -30,6 +32,7 @@ jobs:
           tag_name: prerelease
           prerelease: true
           target_commitish: "${{ github.ref }}"
+          files: html.tar.gz
 
   publish:
     name: Publish to NFSN
