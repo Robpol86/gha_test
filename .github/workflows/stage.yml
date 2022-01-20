@@ -22,6 +22,7 @@ jobs:
     steps:
       - name: Delete existing prerelease
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        env: {GITHUB_TOKEN: "${{ github.token }}"}
         with: {delete_release: true, tag_name: prerelease}
       - name: Create prerelease
         uses: softprops/action-gh-release@8a65c813553f4d05769635eb1b70180d25b9b61b  # master as of 2022-01-19  # TODO revert?
