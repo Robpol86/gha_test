@@ -5,23 +5,34 @@ on:
 
 jobs:
 
-  build:
-    name: Build HTML
+  build-stage:
+    name: Build HTML for Stage
     runs-on: ubuntu-latest
     steps:
       - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
       - {name: Initialize dependencies, uses: ./.github/actions/init-deps}
       - {name: Build docs, run: make docs, env: {SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"}}
-      - {name: Store HTML, uses: actions/upload-artifact@v2, with: {name: html, path: build/html/, if-no-files-found: error}}
+      - {name: Store HTML, uses: actions/upload-artifact@v2, with: {name: html-stage, path: build/html/, if-no-files-found: error}}
+
+  build-prod:
+    name: Build HTML for Production
+    runs-on: ubuntu-latest
+    steps:
+      - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
+      - {name: Initialize dependencies, uses: ./.github/actions/init-deps}
+      - {name: Build docs, run: make docs, env: {SPHINX_HTML_BASEURL: "https://robpol86.com/"}}
+      - {name: Store HTML, uses: actions/upload-artifact@v2, with: {name: html-prod, path: build/html/, if-no-files-found: error}}
 
   prerelease:
     name: Create Prerelease
     runs-on: ubuntu-latest
-    needs: build
-    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
+    needs: [build-stage, build-prod]
+    if: "github.ref == 'refs/heads/stage_and_prod'"  # TODO
     steps:
-      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: html}}
-      - {name: Archive HTML files, run: tar -czvf html.tar.gz html/}
+      - {name: Fetch Stage HTML files, uses: actions/download-artifact@v2, with: {name: html-stage, path: html}}
+      - {name: Archive Stage HTML files, run: tar -czvf html-stage.tar.gz html/ && rm -r $_}
+      - {name: Fetch Prod HTML files, uses: actions/download-artifact@v2, with: {name: html-prod, path: html}}
+      - {name: Archive Prod HTML files, run: tar -czvf html-prod.tar.gz html/ && rm -r $_}
       - name: Get commit title and body
         id: commit
         run: |
@@ -38,12 +49,12 @@ jobs:
           tag_name: prerelease
           prerelease: true
           target_commitish: "${{ github.ref }}"
-          files: html.tar.gz
+          files: html-*.tar.gz
 
-  publish:
-    name: Publish to NFSN
+  publish-stage:
+    name: Publish to NFSN Stage
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-stage
     concurrency: "publish-${{ github.event_name }}"
     env:
       CF_AUTH: "Authorization: Bearer secrets.TOKEN_CF_PURGE_CACHE"
@@ -51,7 +62,7 @@ jobs:
       NFSN_HOST: ssh.phx.nearlyfreespeech.net
       NFSN_USER: secrets.NFSN_SSH_USER_STAGE
     steps:
-      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: html}}
+      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html-stage, path: html}}
       - name: Setup SSH
         run: echo shimataro/ssh-key-action@v2
       - {name: rsync, run: "echo rsync -rptcivh --delete-after --stats html/ ${{env.NFSN_USER}}@${{env.NFSN_HOST}}:/home/public"}
