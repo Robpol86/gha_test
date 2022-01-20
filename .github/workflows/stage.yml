@@ -47,7 +47,7 @@ jobs:
       CF_AUTH: "Authorization: Bearer secrets.TOKEN_CF_PURGE_CACHE"
       CF_URL: https://api.cloudflare.com/client/v4/zones/5efb26a03250a8bc392727af05a39aba/purge_cache
       NFSN_HOST: ssh.phx.nearlyfreespeech.net
-      NFSN_USER: "${{ github.event_name == 'release' && 'secrets.NFSN_SSH_USER_PROD' || 'secrets.NFSN_SSH_USER_STAGE' }}"
+      NFSN_USER: secrets.NFSN_SSH_USER_STAGE
     steps:
       - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: html}}
       - name: Setup SSH

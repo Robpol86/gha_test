@@ -47,7 +47,7 @@ testpdb:
 
 build/html/index.html::
 	mkdir -p $(@D)
-	echo placeholder > $@
+	date > $@
 	@echo Documentation available here: $@
 
 .PHONY: docs build
