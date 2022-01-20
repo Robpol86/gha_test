@@ -22,17 +22,19 @@ jobs:
     steps:
       - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: html}}
       - {name: Archive HTML files, run: tar -czvf html.tar.gz html/}
-      - name: Get commit title
-        id: title
-        run: jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |head -1 |xargs -0 printf '::set-output name=title::%s'
-      - name: Delete existing prerelease
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        env: {GITHUB_TOKEN: "${{ github.token }}"}
-        with: {delete_release: true, tag_name: prerelease}
-      - name: Create prerelease
+      - name: Get commit title and body
+        id: commit
+        run: |
+          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |head -1 > title.txt
+          test -s title.txt || echo "*No title*" > $_
+          xargs -0 printf '::set-output name=title::%s' < title.txt
+          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |tail -n+3 > body.txt
+          test -s body.txt || cp title.txt $_
+      - name: Create or update prerelease
         uses: softprops/action-gh-release@v1
         with:
-          name: "${{ steps.title.outputs.title }}"
+          name: "${{ steps.commit.outputs.title }}"
+          body_path: body.txt
           tag_name: prerelease
           prerelease: true
           target_commitish: "${{ github.ref }}"
