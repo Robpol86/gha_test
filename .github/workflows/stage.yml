@@ -34,3 +34,15 @@ jobs:
           echo curl -sS -X POST "${{env.CF_URL}}" -H "${{env.CF_AUTH}}" --data '{"purge_everything":true}' |
             tee /dev/stderr |
             cat
+
+  prerelease:
+    name: Create Prerelease on GitHub after PR merge
+    runs-on: ubuntu-latest
+    needs: publish
+    # TODO if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, ' (#')"
+    steps:
+      - name: Create prerelease
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: prerelease
+          prerelease: true
