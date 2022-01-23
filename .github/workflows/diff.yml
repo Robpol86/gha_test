@@ -33,6 +33,11 @@ jobs:
             const diff = (await fs.readFile('all.diff', 'utf8')).trim()
             var body = '```diff\n' + diff + '\n```\n'
 
+            # If diff is large collapse it to reduce clutter in the PR.
+            if (diff.count('\n') > 10) {
+              console.log('Large', diff.count('\n'))
+            }
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
