@@ -48,7 +48,14 @@ jobs:
         id: diff
         run: |
           diff --color=always --recursive html_pre/ html_feature/ |tee html.diff
-          if [ -s html.diff ]; then echo "::set-output name=nonzero::true"; fi
+          if [ -s html.diff ]; then
+            echo "::set-output name=nonzero::true"
+            cp html{,-orig}.diff
+            truncate -s 65K html.diff
+            if ! cmp -s html{,-orig}.diff; then
+              echo -e "\n\nTruncated" >> html.diff
+            fi
+          fi
       - name: Post diff to PR if any changes are detected
         if: "${{ steps.diff.outputs.nonzero }}"
         uses: actions/github-script@v5
