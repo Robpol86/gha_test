@@ -57,10 +57,12 @@ jobs:
           script: |
             const body = `\
               ### Diff from Prerelease
-
-              \`\`\`diff
-              # TODO
-              \`\`\`
+              <details>
+                <summary>Show Diff</summary>
+                \`\`\`diff
+                # TODO
+                \`\`\`
+              </details>
             `
 
             github.rest.issues.createComment({
