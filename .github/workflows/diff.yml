@@ -58,13 +58,13 @@ jobs:
             const body = `\
               ### Diff from Prerelease
               <details>
-                <summary>Show Diff</summary>
+              <summary>Show Diff</summary>
 
-                \`\`\`diff
-                # TODO
-                \`\`\`
+              \`\`\`diff
+              # TODO
+              \`\`\`
               </details>
-            `
+            `.replace(/^\s*/m, "")
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
