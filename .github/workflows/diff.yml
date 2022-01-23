@@ -85,6 +85,3 @@ jobs:
               repo: context.repo.repo,
               body: head + body + tail
             })
-
-# # TODO
-#4. Verify diff in gha console looks good.
