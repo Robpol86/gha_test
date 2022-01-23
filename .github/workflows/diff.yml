@@ -33,13 +33,14 @@ jobs:
             const diff = await fs.readFile('all.diff', 'utf8')
             var body = '```diff\n' + diff.trim() + '\n```\n'
 
-            const tail = `\
-              </details>
-            `.replace(/^\s*/m, "")
+            # If diff is large collapse it to reduce clutter in the PR.
+            if (diff.match(/^/mg).length > 10) {
+              console.log('Large')
+            }
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '### Diff against Prerelease Tag\n\n<details>\n<summary>Show large diff</summary>\n\n' + body + tail
+              body: '### Diff against Prerelease Tag\n\n<details>\n<summary>Show large diff</summary>\n\n' + body + '</details>'
             })
