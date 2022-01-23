@@ -52,7 +52,7 @@ jobs:
           if [ -s html.diff ]; then
             echo "::set-output name=nonzero::true"
             cp html{,-orig}.diff
-            truncate -s 65K html.diff
+            truncate -s 66K html.diff
             if ! cmp -s html{,-orig}.diff; then
               echo -e "\n\nTruncated" >> html.diff
             fi
