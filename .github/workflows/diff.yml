@@ -2,7 +2,6 @@ name: Diff
 
 on:
   pull_request:
-  push: {branches: ["**"]}
 
 jobs:
 
@@ -45,4 +44,20 @@ jobs:
       - {name: Fetch this feature build, uses: actions/download-artifact@v2, with: {name: html_feature, path: html_feature}}
       - {name: Fetch latest prerelease, uses: actions/download-artifact@v2, with: {name: html_pre, path: html_pre}}
       - {name: Clean, run: "find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +"}
-      - {name: Diff, run: "diff --color=always --recursive html_pre/ html_feature/ || true"}
+      - name: Diff
+        id: diff
+        run: |
+          diff --color=always --recursive html_pre/ html_feature/ |tee html.diff
+          if [ -s html.diff ]; then echo "::set-output name=nonzero::true"; fi
+      - name: Post diff to PR as comment
+        if: "${{ steps.diff.outputs.nonzero }}"
+        uses: actions/github-script@v5
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'TODO'
+            })
