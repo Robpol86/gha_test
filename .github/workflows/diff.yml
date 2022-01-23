@@ -55,13 +55,16 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           script: |
-            const body = `### Unit Tests and Coverage
-              <details><summary>Show Output</summary>
-              \`\`\`
-              # TODO
-              \`\`\`
+            const body = `\
+              ### Diff from Prerelease
+              <details>
+                <summary>Show Diff</summary>
+
+                \`\`\`diff
+                # TODO
+                \`\`\`
               </details>
-              *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            `
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
