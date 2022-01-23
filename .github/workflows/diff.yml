@@ -59,5 +59,11 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '## Diff from Prerelease\n\n```diff\n# TODO\n```'
+              body: '
+                ### Diff from Prerelease
+
+                ```diff
+                # TODO
+                ```
+              '
             })
