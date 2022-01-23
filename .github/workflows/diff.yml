@@ -48,13 +48,13 @@ jobs:
         id: diff
         run: |
           diff --color=always --recursive html_pre/ html_feature/ || true
-          diff --color=never --recursive html_pre/ html_feature/ > html.diff || true
-          if [ -s html.diff ]; then
+          diff --color=never --recursive html_pre/ html_feature/ > all.diff || true
+          if [ -s all.diff ]; then
             echo "::set-output name=nonzero::true"
-            cp html{,-orig}.diff
-            head -c 261445 html-orig.diff > html.diff
-            if ! cmp -s html{,-orig}.diff; then
-              echo -e "\n\nTruncated" >> html.diff
+            cp all{,-orig}.diff
+            head -c 261445 all-orig.diff > all.diff
+            if ! cmp -s all{,-orig}.diff; then
+              echo -e "\n\nTruncated" >> all.diff
             fi
           fi
       - name: Post diff to PR if any changes are detected
@@ -72,7 +72,7 @@ jobs:
               \`\`\`diff
             `.replace(/^\s*/m, "")
 
-            const body = await fs.readFile('html.diff', 'utf8')
+            const body = await fs.readFile('all.diff', 'utf8')
 
             const tail = `\
               \`\`\`
