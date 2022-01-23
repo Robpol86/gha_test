@@ -30,25 +30,17 @@ jobs:
         with:
           script: |
             const {promises: fs} = require('fs')
+            const diff = await fs.readFile('all.diff', 'utf8')
+            let body = '```diff\n' + diff + '\n```'
 
-            const head = `\
-              ### Diff from Prerelease
-              <details>
-              <summary>Show Diff</summary>
-
-              \`\`\`diff
-            `.replace(/^\s*/m, "")
-
-            const body = await fs.readFile('all.diff', 'utf8')
-
-            const tail = `\
-              \`\`\`
-              </details>
-            `.replace(/^\s*/m, "")
+            # If diff is large collapse it to reduce clutter in the PR.
+            if (diff.match(/^/mg).length > 10) {
+              body = '<details>\n<summary>Show Diff</summary>\n\n' + body + '\n</details>'
+            }
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: head + body + tail
+              body: '### Diff against Prerelease Tag\n\n' + body
             })
