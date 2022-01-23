@@ -86,3 +86,10 @@ jobs:
               repo: context.repo.repo,
               body: head + body + tail
             })
+
+# # TODO
+#
+#1. Try without token or github.token
+#2. Enable prettify and verify no "Truncated"
+#3. Keep incrementing truncate.
+#4. Verify diff in gha console looks good.
