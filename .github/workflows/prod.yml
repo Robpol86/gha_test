@@ -1,0 +1,63 @@
+name: Deploy to Production
+
+on:
+  push: {tags: ["[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]"]}
+
+jobs:
+
+  build:
+    name: Build HTML
+    runs-on: ubuntu-latest
+    steps:
+      - {name: Check out repository code, uses: actions/checkout@v2, with: {fetch-depth: 0}}
+      - {name: Initialize dependencies, uses: ./.github/actions/init-deps}
+      - {name: Build docs, run: make docs, env: {SPHINX_HTML_BASEURL: "https://robpol86.com/"}}
+      - {name: Store HTML, uses: actions/upload-artifact@v2, with: {name: html, path: build/html/, if-no-files-found: error}}
+
+  publish:
+    name: Publish to NFSN
+    runs-on: ubuntu-latest
+    needs: build
+    concurrency: "${{ github.workflow }}-${{ github.job }}"
+    steps:
+      - {name: Check out repository code, uses: actions/checkout@v2}
+      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: build/html/}}
+      - name: Deploy
+        uses: ./.github/actions/deploy
+        with:
+          source: build/html/
+          user: robpol86_robpol86
+          ssh-key: "${{ secrets.NFSN_SSH_KEY }}"
+          cf-token: "${{ secrets.TOKEN_CF_PURGE_CACHE }}"
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - {name: Check out repository code, uses: actions/checkout@v2}
+      - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: build/html/}}
+      - {name: Archive HTML files, run: tar -C build -czvf html.tar.gz html/}
+      - name: Determine title and body
+        id: data
+        run: |
+          awk -v start='^## ${{ github.ref_name }}$' -v end='^## ' '
+            BEGIN               { printf("") > "body.log" }
+            $0~start            { nr=NR; next }
+            $0~end && nr        { exit }
+            nr && NR - nr == 2  { printf("::set-output name=title::%s\n", $0); t=$0 }
+            nr && NR - nr >= 4  { print >> "body.log" }
+
+            function error(msg) {  printf("ERROR: %s\n", msg) > "/dev/stderr"; exit 1 }
+            END {
+              if (! nr) error("Tag section not found in CHANGELOG.md")
+              if (length(t) < 1) error("No title for section in CHANGELOG.md")
+              if (t !~ /^[A-Za-z0-9]/) error("Invalid title for section in CHANGELOG.md")
+            }
+          ' CHANGELOG.md
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "${{ steps.data.outputs.title }}"
+          body_path: body.log
+          files: html.tar.gz
