@@ -11,10 +11,10 @@ runs:
   steps:
     - run: mv -v --no-clobber .git .git-backup || true
       shell: bash
-    - uses: creyD/prettier_action@v3.3
-      with:
-        prettier_options: "--write ${{ inputs.path }}/**/*.{js,css,html,xml}"
-        prettier_plugins: "@prettier/plugin-xml"
+#    - uses: creyD/prettier_action@v3.3
+#      with:
+#        prettier_options: "--write ${{ inputs.path }}/**/*.{js,css,html,xml}"
+#        prettier_plugins: "@prettier/plugin-xml"
     - run: mv -v --no-clobber .git-backup .git || true
       shell: bash
       if: always()

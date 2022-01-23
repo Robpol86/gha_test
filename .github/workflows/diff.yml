@@ -64,7 +64,7 @@ jobs:
           script: |
             const {promises: fs} = require('fs')
             const diff = await fs.readFile('all.diff', 'utf8')
-            let body = '```diff\n' + diff + '\n```'
+            var body = '```diff\n' + diff + '\n```'
 
             # If diff is large collapse it to reduce clutter in the PR.
             if (diff.match(/^/mg).length > 10) {
