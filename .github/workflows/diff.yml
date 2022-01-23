@@ -31,10 +31,9 @@ jobs:
           script: |
             const {promises: fs} = require('fs')
             const diff = await fs.readFile('all.diff', 'utf8')
-            var body = '' + diff + ''
+            var body = '```diff\n' + diff.trim() + '\n```\n'
 
             const tail = `\
-              \`\`\`
               </details>
             `.replace(/^\s*/m, "")
 
@@ -42,5 +41,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '### Diff against Prerelease Tag\n\n<details>\n<summary>Show large diff</summary>\n\n```diff\n' + body + tail
+              body: '### Diff against Prerelease Tag\n\n<details>\n<summary>Show large diff</summary>\n\n' + body + tail
             })
