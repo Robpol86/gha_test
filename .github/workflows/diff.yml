@@ -47,7 +47,8 @@ jobs:
       - name: Diff
         id: diff
         run: |
-          diff --color=always --recursive html_pre/ html_feature/ |tee html.diff
+          diff --color=always --recursive html_pre/ html_feature/ || true
+          diff --color=never --recursive html_pre/ html_feature/ > html.diff || true
           if [ -s html.diff ]; then
             echo "::set-output name=nonzero::true"
             cp html{,-orig}.diff
