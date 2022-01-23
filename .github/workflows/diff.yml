@@ -30,13 +30,8 @@ jobs:
         with:
           script: |
             const {promises: fs} = require('fs')
-            const diff = await fs.readFile('all.diff', 'utf8')
-            var body = '```diff\n' + diff.trim() + '\n```\n'
-
-            # If diff is large collapse it to reduce clutter in the PR.
-            if (diff.match(/^/mg).length > 10) {
-              console.log('Large')
-            }
+            const diff = await fs.readFile('all.diff', 'utf8').trim()
+            var body = '```diff\n' + diff + '\n```\n'
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
