@@ -1,9 +1,7 @@
 name: Deploy to Stage
 
 on:
-  push:
-    branches:
-      - "*"
+  push: {branches: ["**"]}
 
 jobs:
 
@@ -48,6 +46,10 @@ jobs:
           xargs -0 printf '::set-output name=title::%s' < title.log
           jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |tail -n+3 > body.log
           test -s body.log || cp title.log $_
+      - name: Delete prerelease
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with: {delete_release: true, tag_name: prerelease}
+        env: {GITHUB_TOKEN: "${{ github.token }}"}
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
