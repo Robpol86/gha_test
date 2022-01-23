@@ -30,7 +30,7 @@ jobs:
         with:
           script: |
             const {promises: fs} = require('fs')
-            const diff = await fs.readFile('all.diff', 'utf8').trim()
+            const diff = fs.readFile('all.diff', 'utf8').trim()
             var body = '```diff\n' + diff + '\n```\n'
 
             await github.rest.issues.createComment({
