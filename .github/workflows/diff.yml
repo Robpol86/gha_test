@@ -41,14 +41,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [fetch, build]
     steps:
-      - {name: Fetch this feature build, uses: actions/download-artifact@v2, with: {name: html_feature, path: html_feature}}
-      - {name: Fetch latest prerelease, uses: actions/download-artifact@v2, with: {name: html_pre, path: html_pre}}
+      - name: Setup cache
+        uses: actions/cache@v2
+        with: {path: html, key: "${{ runner.os }}-html"}
+      - {name: Fetch this feature build, uses: actions/download-artifact@v2, with: {name: html_feature, path: html/feature}}
+      - {name: Fetch latest prerelease, uses: actions/download-artifact@v2, with: {name: html_pre, path: html/pre}}
       - {name: Clean, run: "find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +"}
       - name: Diff
         id: diff
         run: |
-          diff --color=always --recursive html_pre/ html_feature/ || true
-          diff --color=never --recursive html_pre/ html_feature/ > all.diff || true
+          diff --color=always --recursive html/pre/ html/feature/ || true
+          diff --color=never --recursive html/pre/ html/feature/ > all.diff || true
           if [ -s all.diff ]; then
             echo "::set-output name=nonzero::true"
             cp all{,-orig}.diff
