@@ -55,20 +55,26 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           script: |
-            const body = `\
+            const {promises: fs} = require('fs')
+
+            const head = `\
               ### Diff from Prerelease
               <details>
               <summary>Show Diff</summary>
 
               \`\`\`diff
-              # TODO
+            `.replace(/^\s*/m, "")
+
+            const body = await fs.readFile('html.diff', 'utf8')
+
+            const tail = `\
               \`\`\`
               </details>
             `.replace(/^\s*/m, "")
 
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: body
+              body: head + body + tail
             })
