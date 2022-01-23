@@ -52,7 +52,7 @@ jobs:
           if [ -s all.diff ]; then
             echo "::set-output name=nonzero::true"
             cp all{,-orig}.diff
-            head -c 261445 all-orig.diff > all.diff
+            head -c 261400 all-orig.diff > all.diff
             if ! cmp -s all{,-orig}.diff; then
               echo -e "\n\nTruncated" >> all.diff
             fi
@@ -64,7 +64,7 @@ jobs:
           script: |
             const {promises: fs} = require('fs')
             const diff = await fs.readFile('all.diff', 'utf8')
-            var body = '```diff\n' + diff + '\n```'
+            let body = '```diff\n' + diff + '\n```'
 
             # If diff is large collapse it to reduce clutter in the PR.
             if (diff.match(/^/mg).length > 10) {
@@ -75,5 +75,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '### Diff from Prerelease\n\n' + body
+              body: '### Diff against Prerelease Tag\n\n' + body
             })
