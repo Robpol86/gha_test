@@ -20,36 +20,33 @@ poetry.lock:
 .PHONY: deps
 deps: _HELP = Install project dependencies (optional NO_DEV env var)
 deps:
-	mkdir -p .venv
-	echo placeholder > .venv/readme.txt
+	poetry install $(if $(NO_DEV),--no-dev)
+	poetry run python -V
 
 ## Testing
 
 .PHONY: lint
 lint: _HELP = Run linters
 lint:
-	@echo poetry check
-	@echo poetry run black --check --color --diff .
-	@echo poetry run flake8 --application-import-names docs,tests
-	@echo poetry run pylint docs tests
+	poetry check
+	poetry run black --check --color --diff .
+	poetry run flake8 --application-import-names docs,tests
+	poetry run pylint docs tests
 
 .PHONY: test
 test: _HELP = Run tests
 test:
-	@echo poetry run pytest tests
+	poetry run pytest tests
 
 .PHONY: testpdb
 testpdb: _HELP = Run tests and drop into the debugger on failure
 testpdb:
-	@echo poetry run pytest --pdb tests
+	poetry run pytest --pdb tests
 
 ## Build
 
 build/html/index.html::
-	mkdir -p $(@D)
-	echo placeholder > $@
-	rm -fv $@-*
-	touch $@-$(shell date +%Y-%m-%dT%H-%M-%S).txt
+	poetry run sphinx-build -n -W docs $(@D)
 	@echo Documentation available here: $@
 
 .PHONY: docs build
@@ -58,7 +55,7 @@ docs build: build/html/index.html
 
 autobuild: _HELP = Start a web server, open browser, and auto-rebuild HTML on file changes
 autobuild: build/html/index.html
-	@echo poetry run sphinx-autobuild --open-browser --delay=1 --host localhost -n -W docs $(<D)
+	poetry run sphinx-autobuild --open-browser --delay=1 --host localhost -n -W docs $(<D)
 
 ## Misc
 
