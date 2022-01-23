@@ -52,7 +52,7 @@ jobs:
           if [ -s html.diff ]; then
             echo "::set-output name=nonzero::true"
             cp html{,-orig}.diff
-            truncate -s 260K html.diff
+            truncate -s 255K html.diff
             if ! cmp -s html{,-orig}.diff; then
               echo -e "\n\nTruncated" >> html.diff
             fi
@@ -87,6 +87,4 @@ jobs:
             })
 
 # # TODO
-#2. Enable prettify and verify no "Truncated"
-#3. Keep incrementing truncate.
 #4. Verify diff in gha console looks good.
