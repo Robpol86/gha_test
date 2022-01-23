@@ -2,7 +2,6 @@ name: Diff
 
 on:
   pull_request:
-  push: {branches: ["**"]}
 
 jobs:
 
@@ -45,4 +44,44 @@ jobs:
       - {name: Fetch this feature build, uses: actions/download-artifact@v2, with: {name: html_feature, path: html_feature}}
       - {name: Fetch latest prerelease, uses: actions/download-artifact@v2, with: {name: html_pre, path: html_pre}}
       - {name: Clean, run: "find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +"}
-      - {name: Diff, run: "diff --color=always --recursive html_pre/ html_feature/ || true"}
+      - name: Diff
+        id: diff
+        run: |
+          diff --color=always --recursive html_pre/ html_feature/ || true
+          diff --color=never --recursive html_pre/ html_feature/ > html.diff || true
+          if [ -s html.diff ]; then
+            echo "::set-output name=nonzero::true"
+            cp html{,-orig}.diff
+            head -c 261445 html-orig.diff > html.diff
+            if ! cmp -s html{,-orig}.diff; then
+              echo -e "\n\nTruncated" >> html.diff
+            fi
+          fi
+      - name: Post diff to PR if any changes are detected
+        if: "${{ steps.diff.outputs.nonzero }}"
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const {promises: fs} = require('fs')
+
+            const head = `\
+              ### Diff from Prerelease
+              <details>
+              <summary>Show Diff</summary>
+
+              \`\`\`diff
+            `.replace(/^\s*/m, "")
+
+            const body = await fs.readFile('html.diff', 'utf8')
+
+            const tail = `\
+              \`\`\`
+              </details>
+            `.replace(/^\s*/m, "")
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: head + body + tail
+            })
