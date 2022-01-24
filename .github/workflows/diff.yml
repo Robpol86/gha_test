@@ -36,12 +36,12 @@ jobs:
             // If diff is large collapse it to reduce clutter in the PR.
             let numLines = diff.match(/^/mg).length
             if (numLines > 10) {
-              console.log('Large', numLines)
+              body = '<details>\n<summary>Show ' + numLines + ' lines</summary>\n\n' + body + '\n</details>'
             }
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '### Diff against Prerelease Tag\n\n<details>\n<summary>Show large diff</summary>\n\n' + body + '</details>'
+              body: '### Diff against Prerelease Tag\n\n' + body
             })
