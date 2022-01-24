@@ -34,7 +34,7 @@ jobs:
             var body = '```diff\n' + diff + '\n```\n'
 
             // If diff is large collapse it to reduce clutter in the PR.
-            let numLines = diff.match(/\n/mg).length
+            let numLines = diff.match(/^/mg).length
             if (numLines > 10) {
               console.log('Large', numLines)
             }
