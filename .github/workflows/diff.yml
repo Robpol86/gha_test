@@ -33,8 +33,8 @@ jobs:
             const diff = (await fs.readFile('all.diff', 'utf8')).trim()
             var body = '```diff\n' + diff + '\n```\n'
 
-            # If diff is large collapse it to reduce clutter in the PR.
-            # let numLines = diff.match(/\n/mg).length
+            // If diff is large collapse it to reduce clutter in the PR.
+            // let numLines = diff.match(/\n/mg).length
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
