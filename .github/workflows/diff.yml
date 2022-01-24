@@ -35,7 +35,7 @@ jobs:
 
             // If diff is large collapse it to reduce clutter in the PR.
             let numLines = diff.match(/^/mg).length
-            if (numLines > 10) {
+            if (numLines > 25) {
               body = '<details>\n<summary>Show ' + numLines + ' lines</summary>\n\n' + body + '\n</details>'
             }
 
