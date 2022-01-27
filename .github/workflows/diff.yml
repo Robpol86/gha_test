@@ -58,18 +58,24 @@ jobs:
             fi
           fi
       - name: Post diff to PR if any changes are detected
-        if: "steps.diff.outputs.nonzero"
         uses: actions/github-script@v5
+        env: {DIFF_NONZERO: "${{ steps.diff.outputs.nonzero }}"}
         with:
           script: |
-            const {promises: fs} = require('fs')
-            const diff = (await fs.readFile('all.diff', 'utf8')).trim()
-            var body = '```diff\n' + diff + '\n```\n'
+            var body
 
-            // If diff is large collapse it to reduce clutter in the PR.
-            let numLines = diff.match(/^/mg).length
-            if (numLines > 10) {
-              body = '<details>\n<summary>Show ' + numLines + ' lines</summary>\n\n' + body + '\n</details>'
+            if (!process.env.DIFF_NONZERO) {
+              body = '*No HTML changes detected.*'
+            } else {
+              const {promises: fs} = require('fs')
+              const diff = (await fs.readFile('all.diff', 'utf8')).trim()
+              body = '```diff\n' + diff + '\n```\n'
+
+              // If diff is large collapse it to reduce clutter in the PR.
+              let numLines = diff.match(/^/mg).length
+              if (numLines > 10) {
+                body = '<details>\n<summary>Show ' + numLines + ' lines</summary>\n\n' + body + '\n</details>'
+              }
             }
 
             await github.rest.issues.createComment({
@@ -77,15 +83,4 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '### Diff against Prerelease Tag\n\n' + body
-            })
-      - name: Post message when no changes detected
-        if: "!steps.diff.outputs.nonzero"
-        uses: actions/github-script@v5
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '*No HTML changes detected.*'
             })
