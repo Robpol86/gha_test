@@ -10,8 +10,8 @@ I use GitHub Actions to automatically build and push HTML files to NFSN.
 
 ## Releases
 
-Deployments to production are done by GitHub Actions when a new [release](https://github.com/Robpol86/robpol86.com/releases)
-is manually created. All branch and tag pushes trigger a deployment to staging, whilst pull requests only trigger CI linting.
+Deployments to production are done by GitHub Actions when a new tag matching the format YYYY-MM-DD is manually pushed. All
+branch and tag pushes trigger a deployment to staging, whilst pull requests only trigger CI linting and testing.
 
 ## Local Development
 
@@ -20,14 +20,15 @@ I locally develop this project on an Ubuntu VM via Windows WSL2. To get started:
 ```bash
 # Install Python and Poetry.
 sudo apt-get update && sudo apt-get install python3
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+curl -sSL https://install.python-poetry.org | python3 -
 
 # Setup local environment.
 make distclean
 make init
 make deps
 
-# Build.
-make lint
+# Build and test.
 make docs
+make test
+make lint
 ```
