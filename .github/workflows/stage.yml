@@ -38,14 +38,10 @@ jobs:
     steps:
       - {name: Fetch HTML files, uses: actions/download-artifact@v2, with: {name: html, path: build/html/}}
       - {name: Archive HTML files, run: tar -C build -czvf html.tar.gz html/}
-      - name: Determine title and body
-        id: data
-        run: |
-          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |head -1 > title.log
-          test -s title.log || echo "*No title*" > $_
-          xargs -0 printf '::set-output name=title::%s' < title.log
-          jq -r .head_commit.message < "$GITHUB_EVENT_PATH" |tail -n+3 > body.log
-          test -s body.log || cp title.log $_
+      - {name: Get body, id: cl, uses: ./.github/actions/read-changelog, with: {section: "[Unreleased]", has_title: "false"}}
+      - name: Get title
+        id: commit
+        run: "head -1 <<< '${{ github.event.commits[0].message }}' |xargs -0 printf '::set-output name=title::%s'"
       - name: Delete prerelease
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with: {delete_release: true, tag_name: prerelease}
@@ -53,8 +49,8 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          name: "${{ steps.data.outputs.title }}"
-          body_path: body.log
+          name: "${{ steps.commit.outputs.title }}"
+          body: "${{ steps.cl.outputs.body }}"
           tag_name: prerelease
           prerelease: true
           target_commitish: "${{ github.ref }}"
