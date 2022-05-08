@@ -1,6 +1,6 @@
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "Robpol86.com"
@@ -23,18 +23,22 @@ myst-parser = {version = "*", extras = ["linkify"]}
 pygments = "*"
 sphinx = "*"
 sphinx-autobuild = "*"
-sphinx-book-theme = "^0.1"  # TODO verify fixes.css works with v0.2.*
+sphinx-book-theme = "*"
 sphinx-copybutton = "*"
 sphinx-disqus = "*"
+sphinx-external-toc = "*"
 sphinx-imgur = "*"
 sphinx-last-updated-by-git = "*"
 sphinx-notfound-page = "*"
 sphinx-panels = "*"
 sphinx-sitemap = "*"
-sphinxcontrib-youtube = {git = "https://github.com/Robpol86/youtube", branch = "timestamp_support"}  # TODO pr17
+sphinxcontrib-youtube = "*"
 sphinxext-opengraph = "*"
 
 [tool.poetry.dev-dependencies]
+# Project.
+myst-parser = "^0.16"  # TODO investigate &amp; bug.
+sphinx-book-theme = "0.2.0"  # TODO investigate CSS changes.
 # Linters.
 black = "*"
 flake8 = "*"
@@ -66,7 +70,4 @@ ignored-modules = ["distutils", "py"]
 
 [tool.pytest.ini_options]
 addopts = "--durations=15 --showlocals --verbose --verbose"
-filterwarnings = [
-    "ignore::DeprecationWarning:sphinx.*:",
-]
 log_level = "DEBUG"

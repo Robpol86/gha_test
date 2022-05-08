@@ -6,6 +6,28 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [Unreleased]
 
+- N/A
+
+## 2022-04-01
+
+Installing Windows 11 on a Mac: WSL2 ssh-agent steps
+
+- Moved WSL2 ssh-agent steps from gist to here since steps were split between the two before.
+- Removed software steps out of here since they're out of scope.
+
+## 2022-03-30
+
+Installing Windows 11 on a Mac: Removing more bloatware
+
+- Latest version of sphinx-book-theme with performance enhancements.
+- Implemented support for tagging documents using a slightly customized Sphinx `index` directive.
+- Using sphinx_external_toc to support future blog posts.
+- Updated Windows 11 on Macs page to remove more bloat along with some tweaks.
+
+## 2022-01-28
+
+Franklin T9: Auto Reboot
+
 - Added Auto Reboot section to Franklin T9 page.
 - De-duplicating steps in multiple GitHub Actions workflows by defining my own composite action in this same repo.
 - Optimizing GitHub Actions by only installing dev dependencies in ci.yml and not deploy/diff.
