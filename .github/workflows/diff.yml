@@ -12,6 +12,14 @@ on:
 
 jobs:
 
+  robpol86:
+    name: TODO Remove Me
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          JSON: "${{ toJson(github.event) }}"
+        run: "printenv JSON |jq -CS ."
+
   build:
     name: Build HTML
     runs-on: ubuntu-latest
@@ -40,6 +48,12 @@ jobs:
           name: html_feature
           if-no-files-found: error
           path: build/html/
-      - name: Store HTML as Long Term Asset
-        if: github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: echo TODO  # TODO
+      - name: Store HTML in Orphaned Branch
+        if: github.event.pull_request.merged
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          commit_message: "[skip ci] TODO PR Title/link"
+          force_orphan: true
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          publish_branch: _last_merged_pr_html
+          publish_dir: build/html/
