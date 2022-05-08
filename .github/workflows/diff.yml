@@ -35,7 +35,7 @@ jobs:
           path: build/html
       - name: Store HTML as Temporary Artifact
         if: github.event.action != 'closed'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: html_feature
           if-no-files-found: error
