@@ -10,15 +10,10 @@ on:
       # Additional
       - closed
 
-jobs:
+env:
+  STORAGE_BRANCH: _last_merged_pr_html
 
-  robpol86:
-    name: TODO Remove Me
-    runs-on: ubuntu-latest
-    steps:
-      - env:
-          JSON: "${{ toJson(github.event) }}"
-        run: "printenv JSON |jq -CS ."
+jobs:
 
   build:
     name: Build HTML
@@ -49,11 +44,11 @@ jobs:
           if-no-files-found: error
           path: build/html/
       - name: Store HTML in Orphaned Branch
-        if: github.event.pull_request.merged
+        if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'main'
         uses: peaceiris/actions-gh-pages@v3
         with:
-          commit_message: "[skip ci] TODO PR Title/link"
+          commit_message: "[skip ci]"
           force_orphan: true
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-          publish_branch: _last_merged_pr_html
-          publish_dir: build/html/
+          publish_branch: "${{ env.STORAGE_BRANCH }}"
+          publish_dir: ./build
