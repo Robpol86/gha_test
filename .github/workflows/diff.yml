@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Initialize dependencies
@@ -40,7 +40,7 @@ jobs:
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
         with:
-          name: html_feature
+          name: html_new
           if-no-files-found: error
           path: build/html/
       - name: Store HTML in Orphaned Branch
@@ -48,7 +48,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           commit_message: "[skip ci]"
-          force_orphan: true
+          enable_jekyll: true  # Don't create .nojekyll
+          force_orphan: true  # Discard git history
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           publish_branch: "${{ env.STORAGE_BRANCH }}"
-          publish_dir: ./build
+          publish_dir: ./build/html
