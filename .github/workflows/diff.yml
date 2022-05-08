@@ -71,17 +71,10 @@ jobs:
           name: html_new
           path: html_new
       - name: Clean
-        run: "find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +"
+        run: |
+          rm -rf html_old/.git
+          find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +
       - name: Diff
         id: diff
         run: |
           diff --color=always --recursive html_old/ html_new/ || true
-          diff --color=never --recursive html_old/ html_new/ > all.diff || true
-          if [ -s all.diff ]; then
-            echo "::set-output name=nonzero::true"
-            cp all{,-orig}.diff
-            head -c 261445 all-orig.diff > all.diff
-            if ! cmp -s all{,-orig}.diff; then
-              echo -e "\n\nTruncated" >> all.diff
-            fi
-          fi
