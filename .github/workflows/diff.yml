@@ -53,3 +53,16 @@ jobs:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           publish_branch: "${{ env.STORAGE_BRANCH }}"
           publish_dir: ./build/html
+
+  diff:
+    name: Diff
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch HTML from Orphaned Branch
+        uses: actions/checkout@v3
+        with:
+          ref: "${{ env.STORAGE_BRANCH }}"
+          path: html_old
+      - name: Clean
+        run: "find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +"
