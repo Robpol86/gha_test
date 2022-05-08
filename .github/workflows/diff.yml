@@ -58,11 +58,17 @@ jobs:
     name: Diff
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Fetch HTML from Orphaned Branch
+      - name: Fetch old HTML from Orphaned Branch
         uses: actions/checkout@v3
         with:
           ref: "${{ env.STORAGE_BRANCH }}"
           path: html_old
+      - name: Fetch new HTML from Temporary Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: html_new
+          path: html_new
       - name: Clean
         run: "find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +"
