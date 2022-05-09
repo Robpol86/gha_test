@@ -112,7 +112,7 @@ jobs:
       - name: Post
         uses: actions/github-script@v6
         env:
-          CHANGED: "${{ hashFiles('git_status.txt') && 'true' }}"
+          CHANGED: "${{ hashFiles('git_status.txt') != '' && 'true' }}"
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
         with:
           script: |
