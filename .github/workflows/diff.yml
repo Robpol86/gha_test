@@ -73,4 +73,7 @@ jobs:
           name: html_new
           path: .
       - name: Diff
-        run: git status && git diff HEAD
+        run: |
+          set -eux
+          git -c color.ui=always status
+          git diff HEAD
