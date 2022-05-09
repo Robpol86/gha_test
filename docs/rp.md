@@ -1,3 +1,0 @@
-# RP
-
-Hello World

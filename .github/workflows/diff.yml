@@ -74,7 +74,7 @@ jobs:
           ref: "${{ env.BRANCH_NAME_HTML_OLD }}"
           path: html_old
       - name: Clean
-        run: rm -rf html_old/.git && find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +
+        run: rm -rvf html_old/.git && find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +
       - name: Diff
         env:
           AWK_PROGRAM: |
