@@ -116,9 +116,26 @@ jobs:
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
         with:
           script: |
+            function collapse(str) {
+              var numLines = str.match(/^/mg).length
+              if (numLines > parseInt(process.env.COLLAPSE_GT_LINES))
+                return `<details>\n<summary>Show ` + numLines + ` lines</summary>\n\n` + str + `\n</details>`
+              return str
+            }
+
             function genBody() {
               if (!process.env.CHANGED) return `*No HTML changes detected.*`
-              return `todo`
+              const {promises: fs} = require(`fs`)
+              var body
+
+              // git status
+              const git_status = (await fs.readFile(`git_status.txt`, `utf8`)).trim()
+              body = collapse('```diff\n' + git_status + '\n```\n')
+
+              // git diff patch files
+              // TODO
+
+              return body
             }
 
             await github.rest.issues.createComment({
