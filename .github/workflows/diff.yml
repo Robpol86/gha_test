@@ -109,6 +109,7 @@ jobs:
               rm git_diff.patch
             fi
           fi
+          ls -lah
       - name: Post
         uses: actions/github-script@v6
         env:
