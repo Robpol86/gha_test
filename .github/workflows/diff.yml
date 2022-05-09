@@ -91,7 +91,7 @@ jobs:
           }
           PS4="\n\033[1;33m$PS4\033[0m"
           set -eux
-          git status --untracked-files=all |tee git_status.txt && truncate "$_"
-          git diff --unified="$DIFF_CONTEXT" HEAD |tee git_diff.patch && truncate "$_"
+          git status --untracked-files=all |tee git_status.txt && truncate git_status.txt
+          git diff --unified="$DIFF_CONTEXT" HEAD |tee git_diff.patch && truncate git_diff.patch
       - name: Post diff to PR if any changes are detected
         run: echo TODO
