@@ -37,7 +37,7 @@ jobs:
         run: |
           set -eux
           npm install -g prettier @prettier/plugin-xml
-          prettier --write "$ROOT_DIR_DIFF"/**/*.{js,css,html,xml}
+          prettier --write "$ROOT_DIR_DIFF/**/*.{js,css,html,xml}"
       - name: Store HTML as temporary artifact
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
