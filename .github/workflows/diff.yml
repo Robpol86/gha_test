@@ -85,6 +85,8 @@ jobs:
           name: html_new
           path: html
       - name: Diff
+        env:
+          SUBTRACT_BYTES_PER_COUNT: 10
         run: |
           truncate () {
             cp "$1" "$1.orig"
@@ -99,7 +101,8 @@ jobs:
             git -C html diff --diff-filter=M --unified="$DIFF_CONTEXT" HEAD |tee git_diff.patch
             if [ -s git_diff.patch ]; then
               subtract="$(stat -c%s git_status.txt)"
-              truncate git_diff.patch $(( TRUNCATE_TO_BYTES - subtract ))
+              line_count="$(wc -l < git_status.txt)"
+              truncate git_diff.patch $(( TRUNCATE_TO_BYTES - subtract - (line_count * SUBTRACT_BYTES_PER_COUNT) ))
             fi
           fi
       - name: Post
