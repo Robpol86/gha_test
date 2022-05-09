@@ -12,6 +12,7 @@ on:
 
 env:
   BRANCH_NAME_HTML_OLD: __diff__html_old
+  DIFF_CONTEXT: 5
   PRETTIER_GLOB: "**/*.{js,css,html,xml}"
   ROOT_DIR_DIFF: ./build/html
 
@@ -81,4 +82,4 @@ jobs:
             {
               print
             }
-        run: diff --color=never --unified=5 --recursive html_old/ html_new/ |awk "$AWK_PROGRAM"
+        run: diff --color=never --unified="$DIFF_CONTEXT" --recursive html_old/ html_new/ |awk "$AWK_PROGRAM"
