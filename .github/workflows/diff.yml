@@ -114,7 +114,6 @@ jobs:
         env:
           CHANGED: "${{ hashFiles('git_status.txt') && 'true' }}"
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
-          TRUNCATED: "todo"  # TODO
         with:
           script: |
             function collapse(str) {
