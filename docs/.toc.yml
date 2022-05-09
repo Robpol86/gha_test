@@ -8,7 +8,6 @@ subtrees:
       - file: 3d_printer_mpms2
       - file: franklin_t9
       - file: photo_albums
-      - file: rp
   - caption: Tutorials
     maxdepth: 2
     entries:
