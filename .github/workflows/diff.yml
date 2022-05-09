@@ -11,7 +11,8 @@ on:
       - closed
 
 env:
-  BRANCH_HTML_OLD: _last_merged_pr_html
+  BRANCH_NAME_HTML_OLD: _last_merged_pr_html
+  ROOT_DIR_DIFF: ./build/html
 
 jobs:
 
@@ -35,14 +36,14 @@ jobs:
       - name: Prettify
         uses: ./.github/actions/prettify
         with:
-          path: build/html
+          path: "${{ env.ROOT_DIR_DIFF }}"
       - name: Store HTML as temporary artifact
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
         with:
           name: html_new
           if-no-files-found: error
-          path: build/html/
+          path: "${{ env.ROOT_DIR_DIFF }}"
       - name: Store HTML in orphaned branch
         if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'main'
         uses: peaceiris/actions-gh-pages@v3
@@ -51,8 +52,8 @@ jobs:
           enable_jekyll: true  # Don't create .nojekyll
           force_orphan: true  # Discard git history
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-          publish_branch: "${{ env.BRANCH_HTML_OLD }}"
-          publish_dir: ./build/html
+          publish_branch: "${{ env.BRANCH_NAME_HTML_OLD }}"
+          publish_dir: "${{ env.ROOT_DIR_DIFF }}"
 
   diff:
     name: Diff
@@ -68,7 +69,7 @@ jobs:
       - name: Fetch old HTML
         uses: actions/checkout@v3
         with:
-          ref: "${{ env.BRANCH_HTML_OLD }}"
+          ref: "${{ env.BRANCH_NAME_HTML_OLD }}"
           path: html_old
       - name: Clean
         run: |
