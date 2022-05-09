@@ -34,9 +34,10 @@ jobs:
           SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"
         run: make docs
       - name: Prettify
-        uses: ./.github/actions/prettify
+        uses: creyD/prettier_action@v4.2
         with:
-          path: "${{ env.ROOT_DIR_DIFF }}"
+          prettier_options: "--write ${{ env.ROOT_DIR_DIFF }}/**/*.{js,css,html,xml}"
+          prettier_plugins: @prettier/plugin-xml
       - name: Store HTML as temporary artifact
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
