@@ -33,12 +33,8 @@ jobs:
           SPHINX_GITHUB_BRANCH: main
           SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"
         run: make docs
-      - run: "rm -rf .git"  # TODO find better way to disable Prettify from git committing
       - name: Prettify
-        uses: creyD/prettier_action@v4.2
-        with:
-          prettier_options: "--write ${{ env.ROOT_DIR_DIFF }}/**/*.{js,css,html,xml}"
-          prettier_plugins: "@prettier/plugin-xml"
+        run: npm install -g @prettier/plugin-xml prettier && "$_" --write "$ROOT_DIR_DIFF"/**/*.{js,css,html,xml}
       - name: Store HTML as temporary artifact
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
