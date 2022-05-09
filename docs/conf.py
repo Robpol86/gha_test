@@ -17,7 +17,7 @@ GIT_URL = "https://github.com/Robpol86/robpol86.com"
 
 # General configuration.
 copyright = f'{time.strftime("%Y")}, Robpol86'  # pylint: disable=redefined-builtin  # noqa
-html_last_updated_fmt = f"%c {time.tzname[time.localtime().tm_isdst]}"
+html_last_updated_fmt = None
 exclude_patterns = []
 extensions = [
     "myst_parser",  # https://myst-parser.readthedocs.io/en/latest/index.html
