@@ -70,8 +70,6 @@ jobs:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     needs: build
-    env:
-      URL2: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
     steps:
       - name: Fetch old HTML
         uses: actions/checkout@v3
@@ -103,21 +101,16 @@ jobs:
               truncate git_diff.patch
             fi
           fi
-      - name: Post diff to PR
-        if: "hashFiles('git_status.txt')"
-        run: echo "TODO post changes; >${{ hashFiles('git_status.txt') }}<"
-      - name: Post comment to PR (no changes)
-        if: "! hashFiles('git_status.txt')"
+      - name: Post
         uses: actions/github-script@v6
         env:
-          URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
+          HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
         with:
           script: |
-            const heading = 'Diff Against [Old HTML](' + process.env.URL + ')'
             const body = '*No HTML changes detected.*'
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '### ' + heading + '\n\n' + body
+              body: '### ' + process.env.HEADING + '\n\n' + body
             })
