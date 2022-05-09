@@ -33,6 +33,7 @@ jobs:
           SPHINX_GITHUB_BRANCH: main
           SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"
         run: make docs
+      - run: "rm -rf .git"  # TODO find better way to disable Prettify from git committing
       - name: Prettify
         uses: creyD/prettier_action@v4.2
         with:
