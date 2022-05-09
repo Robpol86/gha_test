@@ -73,4 +73,4 @@ jobs:
           name: html_new
           path: .
       - name: Diff
-        run: git diff HEAD
+        run: git status && git diff HEAD
