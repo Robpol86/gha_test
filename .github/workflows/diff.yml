@@ -84,6 +84,8 @@ jobs:
         with:
           name: html_new
           path: html
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Diff
         env:
           SUBTRACT_BYTES_PER_COUNT: 10
