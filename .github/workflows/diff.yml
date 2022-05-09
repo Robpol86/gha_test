@@ -37,7 +37,7 @@ jobs:
         uses: creyD/prettier_action@v4.2
         with:
           prettier_options: "--write ${{ env.ROOT_DIR_DIFF }}/**/*.{js,css,html,xml}"
-          prettier_plugins: @prettier/plugin-xml
+          prettier_plugins: "@prettier/plugin-xml"
       - name: Store HTML as temporary artifact
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
