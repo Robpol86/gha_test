@@ -107,10 +107,10 @@ jobs:
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
         with:
           script: |
-            const body = '*No HTML changes detected.*'
+            const body = `*No HTML changes detected.*`
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '### ' + process.env.HEADING + '\n\n' + body
+              body: `### ` + process.env.HEADING + `\n\n` + body
             })
