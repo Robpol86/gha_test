@@ -107,9 +107,11 @@ jobs:
       - name: Post comment to PR (no changes)
         if: "hashFiles('git_status.txt')"  # TODO negate
         uses: actions/github-script@v6
+        env:
+          URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
         with:
           script: |
-            const heading = 'Diff Against [Old HTML](https://github.com/Robpol86/gha_test/tree/__diff__html_old)'
+            const heading = 'Diff Against [Old HTML](' + process.env.URL + ')'
             const body = '*No HTML changes detected.*'
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
