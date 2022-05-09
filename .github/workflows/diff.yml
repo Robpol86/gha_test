@@ -100,8 +100,8 @@ jobs:
             fi
           fi
       - name: Post diff to PR
-        if: "hashFiles('/tmp/git_status.txt')"
-        run: echo TODO
-      - name: Post comment to PR indicating no changes
-        if: "! hashFiles('/tmp/git_status.txt')"
-        run: echo TODO
+        if: "hashFiles('/tmp/git_status.txt') != ''"
+        run: echo "TODO post changes; ${{ hashFiles('/tmp/git_status.txt') }}"
+      - name: Post comment to PR (no changes)
+        if: "hashFiles('/tmp/git_status.txt') == ''"
+        run: echo "TODO no changes found; ${{ hashFiles('/tmp/git_status.txt') }}"
