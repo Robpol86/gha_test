@@ -12,6 +12,9 @@ on:
 
 env:
   BRANCH_NAME_HTML_OLD: __diff__html_old
+  GIT_IGNORE: |
+    .doctrees/
+    __pycache__/
   PRETTIER_GLOB: "**/*.{js,css,html,xml}"
   ROOT_DIR_DIFF: ./build/html
 
@@ -34,6 +37,8 @@ jobs:
           SPHINX_GITHUB_BRANCH: main
           SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"
         run: make docs
+      - name: Create .gitignore
+        run: printenv GIT_IGNORE |tee "$ROOT_DIR_DIFF/.gitignore"
       - name: Prettify
         run: |
           set -eux
@@ -74,6 +79,7 @@ jobs:
           path: .
       - name: Diff
         run: |
+          PS4="\n\033[1;33m$PS4\033[0m"
           set -eux
           git -c color.ui=always status
           git diff HEAD
