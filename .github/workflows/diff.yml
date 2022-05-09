@@ -125,12 +125,12 @@ jobs:
 
             function genBody() {
               if (!process.env.CHANGED) return `*No HTML changes detected.*`
-              const {promises: fs} = require(`fs`)
+              const fs = require(`fs`)
               var body
 
               // git status
-              const git_status = (await fs.readFile(`git_status.txt`, `utf8`)).trim()
-              body = collapse('```diff\n' + git_status + '\n```\n')
+              const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`}).trim()
+              body = collapse('```diff\n' + gitStatus + '\n```\n')
 
               // git diff patch files
               // TODO
