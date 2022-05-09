@@ -75,6 +75,11 @@ jobs:
           rm -rf html_old/.git
           find . '(' -name __pycache__ -o -name .doctrees ')' -type d -exec rm -rv {} +
       - name: Diff
-        id: diff
+        env:
+          AWK_PROGRAM: |
+            BEGIN {
+              print("TODO")
+            }
         run: |
-          diff --color=never --recursive --brief html_old/ html_new/ || true
+          diff --color=always --recursive html_old/ html_new/ || true
+          diff --color=never --recursive html_old/ html_new/ |awk "$AWK_PROGRAM"
