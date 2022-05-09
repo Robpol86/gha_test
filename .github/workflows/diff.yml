@@ -106,4 +106,14 @@ jobs:
         run: echo "TODO post changes; >${{ hashFiles('git_status.txt') }}<"
       - name: Post comment to PR (no changes)
         if: "! hashFiles('git_status.txt')"
-        run: echo "TODO no changes found; >${{ hashFiles('git_status.txt') }}<"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const heading = 'Diff Against [Old HTML](https://github.com/Robpol86/gha_test/tree/__diff__html_old)'
+            const body = '*No HTML changes detected.*'
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '### ' + heading + '\n\n' + body
+            })
