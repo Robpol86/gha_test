@@ -104,13 +104,18 @@ jobs:
       - name: Post
         uses: actions/github-script@v6
         env:
+          CHANGED: "${{ hashFiles('git_status.txt') && 'true' }}"
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
         with:
           script: |
-            const body = `*No HTML changes detected.*`
+            function genBody() {
+              if (!process.env.CHANGED) return `*No HTML changes detected.*`
+              return `todo`
+            }
+            
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### ` + process.env.HEADING + `\n\n` + body
+              body: `### ` + process.env.HEADING + `\n\n` + genBody()
             })
