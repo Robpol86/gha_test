@@ -114,6 +114,7 @@ jobs:
         env:
           CHANGED: "${{ hashFiles('git_status.txt') && 'true' }}"
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
+          TRUNCATED: "todo"  # TODO
         with:
           script: |
             function collapse(str) {
@@ -129,7 +130,7 @@ jobs:
               var body
 
               // git status
-              const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`}).trim()
+              const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
               body = collapse('```diff\n' + gitStatus + '\n```\n')
 
               // git diff patch files
