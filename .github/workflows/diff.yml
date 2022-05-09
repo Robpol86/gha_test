@@ -105,7 +105,7 @@ jobs:
         if: "hashFiles('git_status.txt')"
         run: echo "TODO post changes; >${{ hashFiles('git_status.txt') }}<"
       - name: Post comment to PR (no changes)
-        if: "! hashFiles('git_status.txt')"
+        if: "hashFiles('git_status.txt')"  # TODO negate
         uses: actions/github-script@v6
         with:
           script: |
