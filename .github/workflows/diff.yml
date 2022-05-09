@@ -12,6 +12,7 @@ on:
 
 env:
   BRANCH_NAME_HTML_OLD: __diff__html_old
+  DIFF_CONTEXT: 5
   GIT_IGNORE: |
     .doctrees/
     __pycache__/
@@ -83,6 +84,6 @@ jobs:
           PS4="\n\033[1;33m$PS4\033[0m"
           set -eux
           git -c color.ui=always status
-          git diff HEAD
+          git diff --color=always --unified="$DIFF_CONTEXT" HEAD
       - name: Post diff to PR if any changes are detected
         run: echo TODO
