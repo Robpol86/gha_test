@@ -26,7 +26,7 @@ extensions = [
     "sphinx_disqus.disqus",  # https://sphinx-disqus.readthedocs.io
     "sphinx_external_toc",  # https://sphinx-external-toc.readthedocs.io
     "sphinx_imgur.imgur",  # https://sphinx-imgur.readthedocs.io
-    "sphinx_last_updated_by_git",  # https://github.com/mgeier/sphinx-last-updated-by-git
+    # "sphinx_last_updated_by_git",  # https://github.com/mgeier/sphinx-last-updated-by-git
     "sphinx_panels",  # https://sphinx-panels.readthedocs.io
     "sphinx_sitemap",  # https://github.com/jdillard/sphinx-sitemap
     "sphinxcontrib.youtube",  # https://github.com/sphinx-contrib/youtube
