@@ -17,6 +17,7 @@ env:
     __pycache__/
   PRETTIER_GLOB: "**/*.{js,css,html,xml}"
   ROOT_DIR_DIFF: ./build/html
+  TRUNCATE: 261445
 
 jobs:
 
@@ -83,3 +84,5 @@ jobs:
           set -eux
           git -c color.ui=always status
           git diff HEAD
+      - name: Post diff to PR if any changes are detected
+        run: echo TODO
