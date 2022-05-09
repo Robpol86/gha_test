@@ -12,6 +12,7 @@ on:
 
 env:
   BRANCH_NAME_HTML_OLD: __diff__html_old
+  COLLAPSE_GT_LINES: 10
   DIFF_CONTEXT: 5
   GIT_IGNORE: |
     .doctrees/
@@ -87,7 +88,7 @@ jobs:
         run: |
           truncate () {
             cp "$1" "$1.orig"
-            head --bytes="$TRUNCATE_TO_BYTES" "$1.orig" > "$1"
+            head --bytes="$2" "$1.orig" > "$1"
             cmp -s "$1" "$1.orig" || echo -e "\n\nTruncated" |tee -a "$1"
             rm "$1.orig"
           }
@@ -95,10 +96,10 @@ jobs:
           set -euxo pipefail
           git -C html status --porcelain --untracked-files=all |tee git_status.txt
           if [ -s git_status.txt ]; then
-            truncate git_status.txt
             git -C html diff --diff-filter=M --unified="$DIFF_CONTEXT" HEAD |tee git_diff.patch
             if [ -s git_diff.patch ]; then
-              truncate git_diff.patch
+              subtract="$(stat -c%s git_status.txt)"
+              truncate git_diff.patch $(( TRUNCATE_TO_BYTES - subtract ))
             fi
           fi
       - name: Post
@@ -112,7 +113,7 @@ jobs:
               if (!process.env.CHANGED) return `*No HTML changes detected.*`
               return `todo`
             }
-            
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
