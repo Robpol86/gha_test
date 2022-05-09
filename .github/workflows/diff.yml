@@ -77,4 +77,4 @@ jobs:
       - name: Diff
         id: diff
         run: |
-          diff --color=always --recursive html_old/ html_new/ || true
+          diff --color=never --recursive --brief html_old/ html_new/ || true
