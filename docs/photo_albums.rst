@@ -6,7 +6,7 @@ Photo Albums
 
 .. tags:: photos
 
-Here are several of my random photo albums.
+Here are several of my random photo albums. As you can see, I am quite fond of taking pictures of my possessions.
 
 Desk Pictures
 =============
@@ -68,7 +68,7 @@ My server rack cabinet at home. Removed everything from it, cleaned and dusted i
 October 25th, 2013
 ------------------
 
-Taken after finally re-wiring it and setting it up after moving to San Francisco. I only took one photo of it :(
+Taken after finally re-wiring it and setting it up after moving to San Francisco.
 
 .. imgur-embed:: a/1ncP4
 
