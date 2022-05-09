@@ -88,7 +88,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Diff
         env:
-          SUBTRACT_BYTES_PER_COUNT: 10
+          SUBTRACT_BYTES_PER_COUNT: 70
         run: |
           truncate () {
             cp "$1" "$1.orig"
