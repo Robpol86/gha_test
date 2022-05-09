@@ -11,7 +11,8 @@ on:
       - closed
 
 env:
-  BRANCH_NAME_HTML_OLD: _last_merged_pr_html
+  BRANCH_NAME_HTML_OLD: __diff__html_old
+  PRETTIER_GLOB: "**/*.{js,css,html,xml}"
   ROOT_DIR_DIFF: ./build/html
 
 jobs:
@@ -37,7 +38,7 @@ jobs:
         run: |
           set -eux
           npm install -g prettier @prettier/plugin-xml
-          prettier --write "$ROOT_DIR_DIFF/**/*.{js,css,html,xml}"
+          prettier --write "$ROOT_DIR_DIFF/$PRETTIER_GLOB"
       - name: Store HTML as temporary artifact
         if: github.event.action != 'closed'
         uses: actions/upload-artifact@v3
