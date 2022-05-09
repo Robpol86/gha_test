@@ -81,4 +81,4 @@ jobs:
             {
               print
             }
-        run: diff --color=never --recursive html_old/ html_new/ |awk "$AWK_PROGRAM"
+        run: diff --color=never --unified=5 --recursive html_old/ html_new/ |awk "$AWK_PROGRAM"
