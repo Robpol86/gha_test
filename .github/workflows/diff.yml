@@ -94,8 +94,10 @@ jobs:
           git status --porcelain --untracked-files=all |tee /tmp/git_status.txt
           if [ -s /tmp/git_status.txt ]; then
             truncate /tmp/git_status.txt
-            git diff --unified="$DIFF_CONTEXT" HEAD |tee /tmp/git_diff.patch
-            truncate /tmp/git_diff.patch
+            git diff --diff-filter=M --unified="$DIFF_CONTEXT" HEAD |tee /tmp/git_diff.patch
+            if [ -s /tmp/git_diff.patch ]; then
+              truncate /tmp/git_diff.patch
+            fi
           fi
       - name: Post diff to PR
         if: "hashFiles('/tmp/git_status.txt')"
