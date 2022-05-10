@@ -158,12 +158,12 @@ jobs:
               var header = process.env.HEADING
               if (!process.env.TRUNCATED) return header
               var size = fs.statSync(`git_diff.patch.truncated`).size
-              return `${header} (${size} Byte(s) Truncated)`
+              return `${header} (${size} Byte${size == 1 ? '' : 's'} Truncated)`
             }
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### ` + genHeader() + `\n\n` + genBody()
+              body: `### ${genHeader()}\n\n${genBody()}`
             })
