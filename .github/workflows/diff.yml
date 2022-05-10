@@ -197,7 +197,7 @@ jobs:
               var header = `${process.env.HEADER_PREFIX}(${url})`
               if (process.env.IS_TRUNCATED) {
                 var size = fs.statSync(`git_diff.patch.truncated`).size
-                header += ` (${size} Byte${size == 1 ? '' : 's'} Truncated)``
+                header += ` (${size} Byte${size == 1 ? '' : 's'} Truncated)`
               }
               return header
             }
