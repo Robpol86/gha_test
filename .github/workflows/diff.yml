@@ -205,7 +205,7 @@ jobs:
             function* yieldFileContents(dir, suffix) {
               const files = fs.readdirSync(dir).filter(fileName => fileName.endsWith(suffix))
               for (const fileName of files) {
-                const contents = fs.readFileSync(fileName, {encoding:`utf8`, flag:`r`})
+                const contents = fs.readFileSync(fileName, {encoding:`utf8`, flag:`r`}).trimEnd()
                 yield {fileName: fileName, contents: contents}
               }
             }
