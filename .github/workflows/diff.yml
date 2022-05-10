@@ -145,12 +145,16 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: git_status_diff
-      - name: Install dependencies
-        if: hashFiles('git_diff.patch')
-        run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Split patch
         if: hashFiles('git_diff.patch')
-        run: splitpatch git_diff.patch && rm -v git_diff.patch && ls -lah
+        run: |
+          PS4="\n\033[1;33m$PS4\033[0m"
+          set -euxo pipefail
+          sudo apt-get update
+          sudo apt-get install -y splitpatch
+          splitpatch git_diff.patch
+          rm -v git_diff.patch
+          ls -lah
       - name: Post (no changes)
         if: needs.diff.outputs.no-changes
         uses: actions/github-script@v6
