@@ -96,10 +96,16 @@ jobs:
             rm -v git_status.txt
           fi
       - name: Git Diff
+        id: git_diff
         if: hashFiles('git_status.txt')
         run: |
           git -C html diff --diff-filter=M --unified="$DIFF_CONTEXT" HEAD |tee git_diff.patch
-          [ -s git_diff.patch ] || rm -v git_diff.patch
+          if [ -s git_diff.patch ]; then
+            echo "::set-output name=modified::true"
+          else
+            echo "::set-output name=no-modifications::true"
+            rm -v git_diff.patch
+          fi
       - name: Truncate
         if: hashFiles('git_diff.patch')
         run: |
@@ -122,6 +128,8 @@ jobs:
     outputs:
       changed: "${{ steps.git_status.outputs.changed }}"
       no-changes: "${{ steps.git_status.outputs.no-changes }}"
+      modified: "${{ steps.git_diff.outputs.modified }}"
+      no-modifications: "${{ steps.git_diff.outputs.no-modifications }}"
 
   post:
     name: Post
@@ -143,7 +151,7 @@ jobs:
       - name: Split patch
         if: hashFiles('git_diff.patch')
         run: splitpatch git_diff.patch && rm -v git_diff.patch && ls -lah
-      - name: Post No Changes
+      - name: Post (no changes)
         if: needs.diff.outputs.no-changes
         uses: actions/github-script@v6
         with:
@@ -151,6 +159,24 @@ jobs:
             const url = `${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD}`
             const header = `${process.env.HEADER_PREFIX}(${url})`
             const body = `*No HTML changes detected.*`
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### ${header}\n\n${body}`
+            })
+      - name: Post (no modified)
+        if: needs.diff.outputs.changed && needs.diff.outputs.no-modifications
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const url = `${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD}`
+            const header = `${process.env.HEADER_PREFIX}(${url})`
+            
+            const fs = require(`fs`)
+            const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
+            const body = `\`\`\`\n${gitStatus}\n\`\`\`\n`
+            
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
