@@ -213,7 +213,7 @@ jobs:
             function collapse(fileName, contents) {
               var numLines = contents.match(/^/mg).length
               if (numLines > parseInt(process.env.COLLAPSE_GT_LINES))
-                return `<details>\n<summary>Show ${numLines} lines from ${fileName}</summary>\n\n${contents}\n</details>`
+                return `<details>\n<summary>Show ${numLines} lines from ${fileName}</summary>\n${contents}\n</details>`
               return contents
             }
 
