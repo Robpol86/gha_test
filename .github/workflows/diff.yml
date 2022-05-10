@@ -85,9 +85,15 @@ jobs:
           name: html_new
           path: html
       - name: Git Status
+        id: git_status
         run: |
           git -C html status --porcelain --untracked-files=all |tee git_status.txt
-          [ -s git_status.txt ] || rm -v git_status.txt
+          if [ -s git_status.txt ]; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=no-changes::true"
+            rm -v git_status.txt
+          fi
       - name: Git Diff
         if: hashFiles('git_status.txt')
         run: |
@@ -112,6 +118,9 @@ jobs:
             git_status.txt
             git_diff.patch
             git_diff.patch.truncated
+    outputs:
+      changed: "${{ steps.git_status.outputs.changed }}"
+      no-changes: "${{ steps.git_status.outputs.no-changes }}"
 
   post:
     name: Post
@@ -123,6 +132,7 @@ jobs:
       HEADER_URL_BASE: "https://github.com/${{ github.repository }}/tree"
     steps:
       - name: Fetch text/patch files
+        if: needs.diff.outputs.changed
         uses: actions/download-artifact@v3
         with:
           name: git_status_diff
@@ -133,7 +143,7 @@ jobs:
         if: hashFiles('git_diff.patch')
         run: splitpatch git_diff.patch && rm -v git_diff.patch && ls -lah
       - name: Post No Changes
-        if: "! hashFiles('git_status.txt')"
+        if: needs.diff.outputs.no-changes
         uses: actions/github-script@v6
         with:
           script: |
