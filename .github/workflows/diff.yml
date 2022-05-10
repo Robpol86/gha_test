@@ -72,8 +72,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Fetch old HTML
         uses: actions/checkout@v3
         with:
@@ -119,10 +117,30 @@ jobs:
             subtract="$(stat -c%s git_status.txt)"
             line_count="$(wc -l < git_status.txt)"
             truncate git_diff.patch $(( TRUNCATE_TO_BYTES - subtract - (line_count * SUBTRACT_BYTES_PER_COUNT) ))
-            splitpatch git_diff.patch
-            rm git_diff.patch
           fi
+      - name: Store text/patch files as temporary artifacts
+        if: hashFiles('git_status.txt')
+        uses: actions/upload-artifact@v3
+        with:
+          name: git_status_diff
+          path: |
+            git_status.txt
+            git_diff.patch
+            git_diff.patch.truncated
+
+  post:
+    name: Post
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    needs: diff
+    steps:
+      - name: Fetch text/patch files
+        uses: actions/download-artifact@v3
+        with:
+          name: git_status_diff
+      - run: ls -lah
       - name: Post
+        if: "hashFiles('abcd')"
         uses: actions/github-script@v6
         env:
           CHANGED: "${{ hashFiles('git_status.txt') }}"
