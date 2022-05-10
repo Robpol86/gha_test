@@ -128,7 +128,7 @@ jobs:
         uses: actions/github-script@v6
         env:
           CHANGED: "${{ hashFiles('git_status.txt') }}"
-          HEADING_URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
+          HEADER_URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
           TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
         with:
           script: |
@@ -157,7 +157,7 @@ jobs:
             }
 
             function genHeader() {
-              var header = `Diff Against [Old HTML](${process.env.HEADING_URL})`
+              var header = `Diff Against [Old HTML](${process.env.HEADER_URL})`
               if (!process.env.TRUNCATED) return header
               var size = fs.statSync(`git_diff.patch.truncated`).size
               return `${header} (${size} Byte${size == 1 ? '' : 's'} Truncated)`
