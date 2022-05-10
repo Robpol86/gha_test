@@ -108,7 +108,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: git_status_diff
-          path: git_*.*
+          path: |
+            git_status.txt
+            git_diff.patch
+            git_diff.patch.truncated
 
   post:
     name: Post
@@ -116,21 +119,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: diff
     steps:
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Fetch text/patch files
         uses: actions/download-artifact@v3
         with:
           name: git_status_diff
+      - name: Install dependencies
+        if: hashFiles('git_diff.patch')
+        run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Split patch
+        if: hashFiles('git_diff.patch')
         run: splitpatch git_diff.patch && rm -v git_diff.patch && ls -lah
       - name: Post
-        if: "hashFiles('abcd')"
         uses: actions/github-script@v6
         env:
-          CHANGED: "${{ hashFiles('git_status.txt') }}"
+          FLAG_CHANGED: "${{ hashFiles('git_status.txt') }}"
+          FLAG_TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
           HEADER_URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
-          TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
         with:
           script: |
             // TODO split this into two or more steps?
@@ -144,7 +148,7 @@ jobs:
             }
 
             function genBody() {
-              if (!process.env.CHANGED) return `*No HTML changes detected.*`
+              if (!process.env.FLAG_CHANGED) return `*No HTML changes detected.*`
               var body
 
               // git status
@@ -159,7 +163,7 @@ jobs:
 
             function genHeader() {
               var header = `Diff Against [Old HTML](${process.env.HEADER_URL})`
-              if (!process.env.TRUNCATED) return header
+              if (!process.env.FLAG_TRUNCATED) return header
               var size = fs.statSync(`git_diff.patch.truncated`).size
               return `${header} (${size} Byte${size == 1 ? '' : 's'} Truncated)`
             }
