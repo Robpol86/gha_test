@@ -224,8 +224,6 @@ jobs:
             // git diff
             for (const {fileName, contents} of yieldFileContents(`./`, `.patch`)) {
               body += collapse(fileName, `\`\`\`diff\n${contents}\n\`\`\`\n`)
-              console.log(fileName)
-              console.log(contents.length)
             }
 
             await github.rest.issues.createComment({
