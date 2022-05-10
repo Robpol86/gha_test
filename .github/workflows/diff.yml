@@ -95,7 +95,7 @@ jobs:
             head --bytes="$2" "$1.orig" > "$1"
             if ! cmp -s "$1" "$1.orig"; then
               echo -e "\n\nTruncated" |tee -a "$1"
-              echo TODO > "$1.truncated"
+              tail --bytes=+"$(( "$2" + 1 ))" "$1.orig" > "$1.truncated"
             fi
             rm "$1.orig"
           }
@@ -123,7 +123,7 @@ jobs:
         env:
           CHANGED: "${{ hashFiles('git_status.txt') }}"
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
-          TRUNCATED: "todo"  # TODO
+          TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"  # TODO
         with:
           script: |
             function collapse(str) {
