@@ -19,7 +19,7 @@ env:
     __pycache__/
   PRETTIER_GLOB: "**/*.{js,css,html,xml}"
   ROOT_DIR_DIFF: ./build/html
-  TRUNCATE_TO_BYTES: 100  # TODO 261445
+  TRUNCATE_TO_BYTES: 300  # TODO 261445
 
 jobs:
 
