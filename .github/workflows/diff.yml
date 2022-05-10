@@ -202,10 +202,11 @@ jobs:
               return header
             }
 
-            function* yieldDiffs(dir, suffix) {
+            function* yieldFileContents(dir, suffix) {
               const files = fs.readdirSync(dir).filter(fileName => fileName.endsWith(suffix))
               for (const fileName of files) {
-                yield {fileName: fileName, contents: "todo"}
+                const contents = fs.readFileSync(fileName, {encoding:`utf8`, flag:`r`})
+                yield {fileName: fileName, contents: contents}
               }
             }
 
@@ -222,7 +223,7 @@ jobs:
 
             // git diff
             // TODO append to body: collapse(`\`\`\`diff\n${contents}\n\`\`\`\n`)
-            for (const {fileName, contents} of yieldDiffs(`./`, `.patch`)) {
+            for (const {fileName, contents} of yieldFileContents(`./`, `.patch`)) {
               console.log(fileName)
               console.log(contents.length)
             }
