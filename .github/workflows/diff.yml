@@ -1,4 +1,4 @@
-name: Diff
+name: Diff HTML
 
 on:
   pull_request:
@@ -219,11 +219,11 @@ jobs:
 
             // git status
             const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
-            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus.trimEnd()}\n\`\`\``) + `\n\n`
+            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus.trimEnd()}\n\`\`\``)
 
             // git diff
             for (const {fileName, contents} of yieldFileContents(`./`, `.patch`)) {
-              body += collapse(fileName, `\`\`\`diff\n${contents.trimEnd()}\n\`\`\``) + `\n\n`
+              body += `\n\n` + collapse(fileName, `\`\`\`diff\n${contents.trimEnd()}\n\`\`\``)
             }
 
             await github.rest.issues.createComment({
