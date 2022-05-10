@@ -172,11 +172,11 @@ jobs:
           script: |
             const url = `${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD}`
             const header = `${process.env.HEADER_PREFIX}(${url})`
-            
+
             const fs = require(`fs`)
             const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
             const body = `\`\`\`\n${gitStatus}\n\`\`\`\n`
-            
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
