@@ -202,12 +202,12 @@ jobs:
               return header
             }
 
-            function* yieldDiffs(dir) {
-              const dirHandle = fs.opendirSync(dir)
-              // TODO:
-              //    https://stackoverflow.com/questions/32511789/looping-through-files-in-a-folder-node-js
-              //    https://livecodestream.dev/post/how-to-use-generator-and-yield-in-javascript/
-              //    https://nodejs.org/api/fs.html#synchronous-api
+            function* yieldDiffs(dir, suffix) {
+              fs.readdirSync(dir).forEach(fileName => {
+                if (fileName.endsWith(suffix)) {
+                  yield fileName
+                }
+              })
             }
 
             function collapse(fileName, contents) {
@@ -223,6 +223,9 @@ jobs:
 
             // git diff
             // TODO append to body: collapse(`\`\`\`diff\n${contents}\n\`\`\`\n`)
+            for (const fileName of yieldDiffs(`./`, `.patch`)) {
+              console.log(fileName);
+            }
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
