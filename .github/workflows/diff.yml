@@ -201,6 +201,14 @@ jobs:
               }
               return header
             }
+            
+            function* yieldDiffs(dir) {
+              const dirHandle = fs.opendirSync(dir)
+              // TODO:
+              //    https://stackoverflow.com/questions/32511789/looping-through-files-in-a-folder-node-js
+              //    https://livecodestream.dev/post/how-to-use-generator-and-yield-in-javascript/
+              //    https://nodejs.org/api/fs.html#synchronous-api
+            }
 
             function collapse(fileName, contents) {
               var numLines = contents.match(/^/mg).length
