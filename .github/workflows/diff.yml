@@ -174,7 +174,7 @@ jobs:
             const header = `${process.env.HEADER_PREFIX}(${url})`
 
             const fs = require(`fs`)
-            const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
+            const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`}).trimEnd()
             const body = `\`\`\`\n${gitStatus}\n\`\`\`\n`
 
             await github.rest.issues.createComment({
@@ -183,8 +183,8 @@ jobs:
               repo: context.repo.repo,
               body: `### ${header}\n\n${body}`
             })
-      - name: Post
-        if: "hashFiles('TODO ENABLE')"
+      - name: Post Diff
+        if: needs.diff.outputs.changed && needs.diff.outputs.modified && hashFiles('TODO ENABLE')
         uses: actions/github-script@v6
         env:
           FLAG_CHANGED: "${{ hashFiles('git_status.txt') }}"
