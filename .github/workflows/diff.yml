@@ -205,7 +205,7 @@ jobs:
             function* yieldFileContents(dir, suffix) {
               const files = fs.readdirSync(dir).filter(fileName => fileName.endsWith(suffix))
               for (const fileName of files) {
-                const contents = fs.readFileSync(fileName, {encoding:`utf8`, flag:`r`}).trimEnd()
+                const contents = fs.readFileSync(fileName, {encoding:`utf8`, flag:`r`})
                 yield {fileName: fileName, contents: contents}
               }
             }
@@ -218,12 +218,12 @@ jobs:
             }
 
             // git status
-            const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`}).trimEnd()
-            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus}\n\`\`\`\n\n`)
+            const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
+            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus.trimEnd()}\n\`\`\``) + `\n\n`
 
             // git diff
             for (const {fileName, contents} of yieldFileContents(`./`, `.patch`)) {
-              body += collapse(fileName, `\`\`\`diff\n${contents}\n\`\`\`\n\n`)
+              body += collapse(fileName, `\`\`\`diff\n${contents.trimEnd()}\n\`\`\``) + `\n\n`
             }
 
             await github.rest.issues.createComment({
