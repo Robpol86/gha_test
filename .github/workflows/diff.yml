@@ -123,10 +123,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: git_status_diff
-          path: |
-            git_status.txt
-            git_diff.patch
-            git_diff.patch.truncated
+          path: git_*.*
 
   post:
     name: Post
