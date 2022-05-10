@@ -204,7 +204,9 @@ jobs:
 
             function* yieldDiffs(dir, suffix) {
               const files = fs.readdirSync(dir).filter(fileName => fileName.endsWith(suffix))
-              yield* files
+              for (const fileName of files) {
+                yield {fileName: fileName, contents: "todo"}
+              }
             }
 
             function collapse(fileName, contents) {
@@ -220,7 +222,10 @@ jobs:
 
             // git diff
             // TODO append to body: collapse(`\`\`\`diff\n${contents}\n\`\`\`\n`)
-            for (const fileName of yieldDiffs(`./`, `.patch`)) console.log(fileName)
+            for (const {fileName, contents} of yieldDiffs(`./`, `.patch`)) {
+              console.log(fileName)
+              console.log(contents.length)
+            }
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
