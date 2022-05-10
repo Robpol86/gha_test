@@ -147,15 +147,14 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const url = `${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD}`
+            const header = `### ${process.env.HEADER_PREFIX}(${url})`
+            const body = `*No HTML changes detected.*`
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `
-                ### ${process.env.HEADER_PREFIX}(${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD})
-
-                *No HTML changes detected.*
-              `
+              body: `### ${header}\n\n${body}`
             })
       - name: Post
         if: "hashFiles('TODO ENABLE')"
