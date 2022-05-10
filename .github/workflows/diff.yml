@@ -136,7 +136,7 @@ jobs:
             function collapse(str) {
               var numLines = str.match(/^/mg).length
               if (numLines > parseInt(process.env.COLLAPSE_GT_LINES))
-                return `<details>\n<summary>Show ` + numLines + ` lines</summary>\n\n` + str + `\n</details>`
+                return `<details>\n<summary>Show ${numLines} lines</summary>\n\n${str}\n</details>`
               return str
             }
 
@@ -158,7 +158,7 @@ jobs:
               var header = process.env.HEADING
               if (!process.env.TRUNCATED) return header
               var size = fs.statSync(`git_diff.patch.truncated`).size
-              return header + ` (` + size + ` Byte(s) Truncated)`
+              return `${header} (${size} Byte(s) Truncated)`
             }
 
             await github.rest.issues.createComment({
