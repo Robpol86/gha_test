@@ -184,48 +184,41 @@ jobs:
               body: `### ${header}\n\n${body}`
             })
       - name: Post Diff
-        if: needs.diff.outputs.changed && needs.diff.outputs.modified && hashFiles('TODO ENABLE')
+        if: needs.diff.outputs.changed && needs.diff.outputs.modified
         uses: actions/github-script@v6
         env:
-          FLAG_CHANGED: "${{ hashFiles('git_status.txt') }}"
-          FLAG_TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
-          HEADER_URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
+          IS_TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
         with:
           script: |
-            // TODO split this into two or more steps?
             const fs = require(`fs`)
 
-            function collapse(str) {
-              var numLines = str.match(/^/mg).length
-              if (numLines > parseInt(process.env.COLLAPSE_GT_LINES))
-                return `<details>\n<summary>Show ${numLines} lines</summary>\n\n${str}\n</details>`
-              return str
-            }
-
-            function genBody() {
-              if (!process.env.FLAG_CHANGED) return `*No HTML changes detected.*`
-              var body
-
-              // git status
-              const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`})
-              body = collapse(`\`\`\`diff\n${gitStatus}\n\`\`\`\n`)
-
-              // git diff patch files
-              // TODO
-
-              return body
-            }
-
             function genHeader() {
-              var header = `Diff Against [Old HTML](${process.env.HEADER_URL})`
-              if (!process.env.FLAG_TRUNCATED) return header
-              var size = fs.statSync(`git_diff.patch.truncated`).size
-              return `${header} (${size} Byte${size == 1 ? '' : 's'} Truncated)`
+              const url = `${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD}`
+              var header = `${process.env.HEADER_PREFIX}(${url})`
+              if (process.env.IS_TRUNCATED) {
+                var size = fs.statSync(`git_diff.patch.truncated`).size
+                header += ` (${size} Byte${size == 1 ? '' : 's'} Truncated)``
+              }
+              return header
             }
+
+            function collapse(fileName, contents) {
+              var numLines = contents.match(/^/mg).length
+              if (numLines > parseInt(process.env.COLLAPSE_GT_LINES))
+                return `<details>\n<summary>Show ${numLines} lines from ${fileName}</summary>\n\n${contents}\n</details>`
+              return contents
+            }
+
+            // git status
+            const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`}).trimEnd()
+            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus}\n\`\`\`\n`)
+
+            // git diff
+            // TODO append to body: collapse(`\`\`\`diff\n${contents}\n\`\`\`\n`)
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### ${genHeader()}\n\n${genBody()}`
+              body: `### ${genHeader()}\n\n${body}`
             })
