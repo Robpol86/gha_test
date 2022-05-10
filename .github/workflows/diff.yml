@@ -219,11 +219,11 @@ jobs:
 
             // git status
             const gitStatus = fs.readFileSync(`git_status.txt`, {encoding:`utf8`, flag:`r`}).trimEnd()
-            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus}\n\`\`\`\n`)
+            var body = collapse(`git_status.txt`, `\`\`\`\n${gitStatus}\n\`\`\`\n\n`)
 
             // git diff
             for (const {fileName, contents} of yieldFileContents(`./`, `.patch`)) {
-              body += collapse(fileName, `\`\`\`diff\n${contents}\n\`\`\`\n`)
+              body += collapse(fileName, `\`\`\`diff\n${contents}\n\`\`\`\n\n`)
             }
 
             await github.rest.issues.createComment({
