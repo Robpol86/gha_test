@@ -201,7 +201,7 @@ jobs:
               }
               return header
             }
-            
+
             function* yieldDiffs(dir) {
               const dirHandle = fs.opendirSync(dir)
               // TODO:
