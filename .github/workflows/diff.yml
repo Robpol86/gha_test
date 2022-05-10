@@ -19,7 +19,7 @@ env:
     __pycache__/
   PRETTIER_GLOB: "**/*.{js,css,html,xml}"
   ROOT_DIR_DIFF: ./build/html
-  TRUNCATE_TO_BYTES: 261445
+  TRUNCATE_TO_BYTES: 253952
 
 jobs:
 
@@ -41,7 +41,7 @@ jobs:
           SPHINX_HTML_BASEURL: "https://rob86stage.robpol86.com/"
         run: make docs
       - name: Create .gitignore
-        run: printenv GIT_IGNORE |tee "$ROOT_DIR_DIFF/.gitignore"
+        run: printenv GIT_IGNORE |tee -a "$ROOT_DIR_DIFF/.gitignore"
       - name: Prettify
         run: |
           PS4="\n\033[1;33m$PS4\033[0m"
@@ -84,52 +84,85 @@ jobs:
         with:
           name: html_new
           path: html
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y splitpatch
-      - name: Diff
-        env:
-          SUBTRACT_BYTES_PER_COUNT: 70
+      - name: Git Status
+        id: git_status
         run: |
-          # TODO split this into two or more steps?
-          error() {
-            printf '\e[31mERROR: %s\e[0m\n' "$*" >&2
-            exit 1
-          }
-          truncate () {
-            cp "$1" "$1.orig"
-            (( "$2" > 0 )) || error "Negative/null truncate: $2"
-            head --bytes="$2" "$1.orig" > "$1"
-            if ! cmp -s "$1" "$1.orig"; then
-              echo -e "\n\nTruncated" |tee -a "$1"
-              tail --bytes=+"$(( "$2" + 1 ))" "$1.orig" > "$1.truncated"
-            fi
-            rm "$1.orig"
-          }
-          PS4="\n\033[1;33m$PS4\033[0m"
-          set -euxo pipefail
-          
-          # git status
           git -C html status --porcelain --untracked-files=all |tee git_status.txt
-          if [ ! -s git_status.txt ]; then
+          if [ -s git_status.txt ]; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=no-changes::true"
             rm -v git_status.txt
-            exit 0
           fi
-          
-          # git diff
+      - name: Git Diff
+        if: hashFiles('git_status.txt')
+        run: |
           git -C html diff --diff-filter=M --unified="$DIFF_CONTEXT" HEAD |tee git_diff.patch
-          if [ -s git_diff.patch ]; then
-            subtract="$(stat -c%s git_status.txt)"
-            line_count="$(wc -l < git_status.txt)"
-            truncate git_diff.patch $(( TRUNCATE_TO_BYTES - subtract - (line_count * SUBTRACT_BYTES_PER_COUNT) ))
-            splitpatch git_diff.patch
-            rm git_diff.patch
+          [ -s git_diff.patch ] || rm -v git_diff.patch
+      - name: Truncate
+        if: hashFiles('git_diff.patch')
+        run: |
+          cp git_diff.patch git_diff.patch.orig
+          head --bytes="$TRUNCATE_TO_BYTES" git_diff.patch.orig > git_diff.patch
+          if ! cmp -s git_diff.patch git_diff.patch.orig; then
+            echo -e "\n\nTruncated" |tee -a git_diff.patch
+            tail --bytes=+"$(( TRUNCATE_TO_BYTES + 1 ))" git_diff.patch.orig > git_diff.patch.truncated
           fi
+          rm -v git_diff.patch.orig
+      - name: Store text/patch files as temporary artifacts
+        if: hashFiles('git_status.txt')
+        uses: actions/upload-artifact@v3
+        with:
+          name: git_status_diff
+          path: |
+            git_status.txt
+            git_diff.patch
+            git_diff.patch.truncated
+    outputs:
+      changed: "${{ steps.git_status.outputs.changed }}"
+      no-changes: "${{ steps.git_status.outputs.no-changes }}"
+
+  post:
+    name: Post
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    needs: diff
+    env:
+      HEADER_PREFIX: "Diff Against [Old HTML]"
+      HEADER_URL_BASE: "https://github.com/${{ github.repository }}/tree"
+    steps:
+      - name: Fetch text/patch files
+        if: needs.diff.outputs.changed
+        uses: actions/download-artifact@v3
+        with:
+          name: git_status_diff
+      - name: Install dependencies
+        if: hashFiles('git_diff.patch')
+        run: sudo apt-get update && sudo apt-get install -y splitpatch
+      - name: Split patch
+        if: hashFiles('git_diff.patch')
+        run: splitpatch git_diff.patch && rm -v git_diff.patch && ls -lah
+      - name: Post No Changes
+        if: needs.diff.outputs.no-changes
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const url = `${process.env.HEADER_URL_BASE}/${process.env.BRANCH_NAME_HTML_OLD}`
+            const header = `${process.env.HEADER_PREFIX}(${url})`
+            const body = `*No HTML changes detected.*`
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### ${header}\n\n${body}`
+            })
       - name: Post
+        if: "hashFiles('TODO ENABLE')"
         uses: actions/github-script@v6
         env:
-          CHANGED: "${{ hashFiles('git_status.txt') }}"
+          FLAG_CHANGED: "${{ hashFiles('git_status.txt') }}"
+          FLAG_TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
           HEADER_URL: "https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }}"
-          TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
         with:
           script: |
             // TODO split this into two or more steps?
@@ -143,7 +176,7 @@ jobs:
             }
 
             function genBody() {
-              if (!process.env.CHANGED) return `*No HTML changes detected.*`
+              if (!process.env.FLAG_CHANGED) return `*No HTML changes detected.*`
               var body
 
               // git status
@@ -158,7 +191,7 @@ jobs:
 
             function genHeader() {
               var header = `Diff Against [Old HTML](${process.env.HEADER_URL})`
-              if (!process.env.TRUNCATED) return header
+              if (!process.env.FLAG_TRUNCATED) return header
               var size = fs.statSync(`git_diff.patch.truncated`).size
               return `${header} (${size} Byte${size == 1 ? '' : 's'} Truncated)`
             }
