@@ -131,11 +131,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: diff
     steps:
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y splitpatch
       - name: Fetch text/patch files
         uses: actions/download-artifact@v3
         with:
           name: git_status_diff
-      - run: ls -lah
+      - name: Split patch
+        run: splitpatch git_diff.patch && rm -v git_diff.patch && ls -lah
       - name: Post
         if: "hashFiles('abcd')"
         uses: actions/github-script@v6
