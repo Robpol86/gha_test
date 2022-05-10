@@ -91,7 +91,7 @@ jobs:
           SUBTRACT_BYTES_PER_COUNT: 70
         run: |
           error() {
-            printf '\e[31m=> ERROR: %s\e[0m\n' "$*" >&2
+            printf '\e[31mERROR: %s\e[0m\n' "$*" >&2
             exit 1
           }
           truncate () {
@@ -128,9 +128,11 @@ jobs:
         env:
           CHANGED: "${{ hashFiles('git_status.txt') }}"
           HEADING: "Diff Against [Old HTML](https://github.com/${{ github.repository }}/tree/${{ env.BRANCH_NAME_HTML_OLD }})"
-          TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"  # TODO
+          TRUNCATED: "${{ hashFiles('git_diff.patch.truncated') }}"
         with:
           script: |
+            const fs = require(`fs`)
+
             function collapse(str) {
               var numLines = str.match(/^/mg).length
               if (numLines > parseInt(process.env.COLLAPSE_GT_LINES))
@@ -140,7 +142,6 @@ jobs:
 
             function genBody() {
               if (!process.env.CHANGED) return `*No HTML changes detected.*`
-              const fs = require(`fs`)
               var body
 
               // git status
@@ -153,9 +154,16 @@ jobs:
               return body
             }
 
+            function genHeader() {
+              var header = process.env.HEADING
+              if (!process.env.TRUNCATED) return header
+              var size = fs.statSync(`git_diff.patch.truncated`).size
+              return header + ` (` + size + ` Byte(s) Truncated)`
+            }
+
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### ` + process.env.HEADING + `\n\n` + genBody()
+              body: `### ` + genHeader() + `\n\n` + genBody()
             })
