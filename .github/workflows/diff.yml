@@ -205,7 +205,7 @@ jobs:
             function* yieldDiffs(dir, suffix) {
               fs.readdirSync(dir).forEach(fileName => {
                 if (fileName.endsWith(suffix)) {
-                  yield fileName
+                  // yield fileName
                 }
               })
             }
