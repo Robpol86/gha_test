@@ -4,13 +4,13 @@
 Atrix Lapdock Other Uses
 ========================
 
-It's a good idea to remove the plate on the docking area (underneath where the phone would be). It makes it easier to
-plug in the adapters or have to sand/shave them less. You can easily pull it off with your finger nails (the plate
-actually has a couple of magnets to keep it in place, and two small plastic clips).
-
 I bought the Atrix Lapdock since I couldn't find any sub $100 portable HDMI displays. The only affordable displays I
 could find were USB only. With the Atrix Lapdock and some adapters, I was able to use it as a portable display for
 several devices, which is great for traveling.
+
+It's a good idea to remove the plate on the docking area (underneath where the phone would be). It makes it easier to
+plug in the adapters or have to sand/shave them less. You can easily pull it off with your finger nails (the plate
+actually has a couple of magnets to keep it in place, and two small plastic clips).
 
 .. imgur-image:: WpsmI
     :width: 49%
@@ -24,15 +24,11 @@ Pictures and Videos
 
 .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/zCxTTrTZSSM?rel=0" frameborder="0"></iframe>
-
-.. raw:: html
-
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/zCxTTrTZSSM?rel=0" frameborder="0"></iframe>
-
-.. raw:: html
-
     <iframe width="560" height="315" src="https://www.youtube.com/embed/VfdKq33WgHw?rel=0" frameborder="0"></iframe>
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/zCxTTrTZSSM?rel=0" frameborder="0"></iframe>
 
 .. raw:: html
 
@@ -48,9 +44,9 @@ With a Nexus 4
 Works with the Nexus 4 just fine, appears to maintain aspect ratio. Adapters used:
 
 * `HDMI Male to Micro HDMI Female <https://www.dealextreme.com/p/hdmi-male-to-micro-hdmi-female-adapter-66079>`_
-* `HDMI Port Saver (Male to Female) 90 Degree <https://www.monoprice.com/products/product.asp?p_id=3733>`_
 * `Micro USB B Male to Female <https://www.ebay.com/itm/ws/eBayISAPI.dll?ViewItem&item=270928425953>`_
 * `SlimPort SP1002 (HDMI) <https://www.amazon.com/dp/B009UZBLSG/>`_
+* `HDMI Port Saver (Male to Female) 90 Degree <https://www.monoprice.com/products/product.asp?p_id=3733>`_
 
 .. imgur-image:: MJs3n49
     :width: 49%

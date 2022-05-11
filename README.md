@@ -24,6 +24,3 @@ branch and tag pushes trigger a deployment to staging, whilst pull requests only
 ## TODO
 
 * Test with no html_old branch.
-* Test collapse
-* Test truncate
-* Test 0-many patch files.

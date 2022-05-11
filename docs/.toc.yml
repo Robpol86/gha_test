@@ -12,6 +12,10 @@ subtrees:
     maxdepth: 2
     entries:
       - file: windows_11_mac
+      - file: raspberry_pi_luks
+      - file: root_certificate_authority
+      - file: raspberry_pi_project_fi
+      - file: postfix_gmail_forwarding
       - file: bareos_tape_backup
       - file: flash_droid_cricket
       - file: rns_510_vim
