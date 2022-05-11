@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      property="article:modified_time"
+      content="2022-05-08T21:29:20+00:00"
+    />
+    <meta property="og:title" content="Installing Windows 11 on a Mac" />
+
+    <meta property="og:type" content="website" />
+
+    <meta
+      property="og:url"
+      content="https://rob86stage.robpol86.com/windows_11_mac.html"
+    />
+
+    <meta property="og:site_name" content="Robpol86.com" />
+
+    <meta
+      property="og:description"
+      content="This guide lays out the steps I take to install Windows 11 on my Apple computers using a custom ISO. This allows me to bypass the current TPM 2.0 requirement, since at this time Boot Camp does not provide TPM 2.0 to Windows. Create ISO:,, File Name, sha1sum / Get-FileHash -Algorithm SHA1,,, Win10..."
+    />
+
+    <meta property="og:image" content="https://i.imgur.com/1J45UMBh.png" />
+
+    <meta property="og:image:alt" content="Robpol86.com" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="rob86stage.robpol86.com" />
+    <title>Installing Windows 11 on a Mac &#8212; Robpol86.com</title>
+
+    <link href="_static/css/theme.css" rel="stylesheet" />
+    <link
+      href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="_static/vendor/fontawesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2"
+    />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2"
+    />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="_static/background_image.css"
+    />
+    <link rel="stylesheet" type="text/css" href="_static/fixes.css" />
+
+    <link
+      rel="preload"
+      as="script"
+      href="_static/js/index.be7d3bbb2ef33a8344ce.js"
+    />
+
+    <script
+      data-url_root="./"
+      id="documentation_options"
+      src="_static/documentation_options.js"
+    ></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
+    <script src="_static/disqus.js"></script>
+    <link
+      rel="canonical"
+      href="https://rob86stage.robpol86.com/windows_11_mac.html"
+    />
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link
+      rel="next"
+      title="Raspberry Pi LUKS Root Encryption"
+      href="raspberry_pi_luks.html"
+    />
+    <link rel="prev" title="Photo Albums" href="photo_albums.html" />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/apple-touch-icon.png?v=210604"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon-32x32.png?v=210604"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon-16x16.png?v=210604"
+    />
+    <link rel="manifest" href="/site.webmanifest?v=210604" />
+    <link
+      rel="mask-icon"
+      href="/safari-pinned-tab.svg?v=210604"
+      color="#7c7c7c"
+    />
+    <link rel="shortcut icon" href="/favicon.ico?v=210604" />
+    <meta name="apple-mobile-web-app-title" content="Robpol86.com" />
+    <meta name="application-name" content="Robpol86.com" />
+    <meta name="msapplication-TileColor" content="#00a300" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+    <!-- Google Analytics -->
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    <div class="container-fluid" id="banner"></div>
+
+    <div class="container-xl">
+      <div class="row">
+        <!-- Checkboxes to toggle the left sidebar -->
+        <input
+          type="checkbox"
+          class="sidebar-toggle"
+          name="__navigation"
+          id="__navigation"
+          aria-label="Toggle navigation sidebar"
+        />
+        <label class="overlay" for="__navigation">
+          <div class="visually-hidden">Toggle navigation sidebar</div>
+        </label>
+        <div
+          class="col-12 col-md-3 bd-sidebar site-navigation"
+          id="site-navigation"
+        >
+          <div class="navbar-brand-box">
+            <a class="navbar-brand text-wrap" href="index.html">
+              <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+
+              <img src="_static/logo.svg" class="logo" alt="logo" />
+            </a>
+          </div>
+          <form
+            class="bd-search d-flex align-items-center"
+            action="search.html"
+            method="get"
+          >
+            <i class="icon fas fa-search"></i>
+            <input
+              type="search"
+              class="form-control"
+              name="q"
+              id="search-input"
+              placeholder="Search the docs ..."
+              aria-label="Search the docs ..."
+              autocomplete="off"
+            />
+          </form>
+          <nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+            <div class="bd-toc-item active">
+              <p aria-level="2" class="caption" role="heading">
+                <span class="caption-text"> Projects </span>
+              </p>
+              <ul class="nav bd-sidenav">
+                <li class="toctree-l1">
+                  <a class="reference internal" href="vw_alltrack_2019.html">
+                    Golf Alltrack SE
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="mib2_comp_media.html">
+                    MIB2 Composition Media Hacking
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="3d_printer_mpms2.html">
+                    Monoprice Maker Select v2
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="franklin_t9.html">
+                    T-Mobile Franklin T9 Hacking
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="photo_albums.html">
+                    Photo Albums
+                  </a>
+                </li>
+              </ul>
+              <p aria-level="2" class="caption" role="heading">
+                <span class="caption-text"> Tutorials </span>
+              </p>
+              <ul class="current nav bd-sidenav">
+                <li class="toctree-l1 current active">
+                  <a class="current reference internal" href="#">
+                    Installing Windows 11 on a Mac
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="raspberry_pi_luks.html">
+                    Raspberry Pi LUKS Root Encryption
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a
+                    class="reference internal"
+                    href="root_certificate_authority.html"
+                  >
+                    Setting Up a Home Root CA
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a
+                    class="reference internal"
+                    href="raspberry_pi_project_fi.html"
+                  >
+                    Raspberry Pi on Project Fi
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a
+                    class="reference internal"
+                    href="postfix_gmail_forwarding.html"
+                  >
+                    Postfix and Gmail Forwarding
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="bareos_tape_backup.html">
+                    Bareos Tape Backup on a 124T
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="flash_droid_cricket.html">
+                    Flashing Motorola Droid to Cricket
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="rns_510_vim.html">
+                    US RNS-510 Video In Motion
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="imagecfg.html">
+                    ImageCFG
+                  </a>
+                </li>
+              </ul>
+              <p aria-level="2" class="caption" role="heading">
+                <span class="caption-text"> Archived Projects </span>
+              </p>
+              <ul class="nav bd-sidenav">
+                <li class="toctree-l1">
+                  <a
+                    class="reference internal"
+                    href="wireless_charging_car_dock.html"
+                  >
+                    Wireless Charging Car Dock
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="atrix_lapdock.html">
+                    Atrix Lapdock Other Uses
+                  </a>
+                </li>
+                <li class="toctree-l1">
+                  <a class="reference internal" href="vw_jsw_2010.html">
+                    Jetta SportWagen TDI
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <!-- To handle the deprecated key -->
+
+          <div class="navbar_extra_footer">
+            <p>
+              <a href="/genindex.html">Tags</a> |
+              <a href="/sitemap.xml">Sitemap</a><br />Generator:
+              <a href="https://www.sphinx-doc.org/">Sphinx</a><br />Theme:
+              <a href="https://sphinx-book-theme.readthedocs.io/"
+                >Sphinx Book Theme</a
+              ><br />Host:
+              <a href="https://www.nearlyfreespeech.net/"
+                >NearlyFreeSpeech.NET</a
+              ><br />License:
+              <a
+                href="https://github.com/Robpol86/robpol86.com/blob/main/LICENSE"
+                >BSD-2-Clause</a
+              ><br />
+            </p>
+          </div>
+        </div>
+
+        <!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+        <div class="sbt-scroll-pixel-helper"></div>
+        <main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+          <div class="topbar container-xl fixed-top">
+            <div class="topbar-contents row">
+              <div
+                class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"
+              ></div>
+              <div class="col pl-md-4 topbar-main">
+                <div class="topbar-left">
+                  <label class="nav-toggle-button" for="__navigation">
+                    <div class="visually-hidden">Toggle navigation</div>
+                    <i class="fas fa-bars"></i>
+                  </label>
+                </div>
+
+                <div class="dropdown-buttons-trigger">
+                  <button
+                    id="dropdown-buttons-trigger"
+                    class="btn btn-secondary topbarbtn"
+                    aria-label="Download this page"
+                  >
+                    <i class="fas fa-download"></i>
+                  </button>
+
+                  <div class="dropdown-buttons">
+                    <!-- ipynb file if we had a myst markdown file -->
+
+                    <!-- Download raw file -->
+                    <a class="dropdown-buttons" href="_sources/"
+                      ><button
+                        type="button"
+                        class="btn btn-secondary topbarbtn"
+                        title="Download source file"
+                        data-toggle="tooltip"
+                        data-placement="left"
+                      >
+                        .md
+                      </button></a
+                    >
+                    <!-- Download PDF via print -->
+                    <button
+                      type="button"
+                      id="download-print"
+                      class="btn btn-secondary topbarbtn"
+                      title="Print to PDF"
+                      onclick="printPdf(this)"
+                      data-toggle="tooltip"
+                      data-placement="left"
+                    >
+                      .pdf
+                    </button>
+                  </div>
+                </div>
+
+                <!-- GitHub link -->
+
+                <a
+                  class="edit-button"
+                  href="https://github.com/Robpol86/robpol86.com/blob/main/docs/windows_11_mac.md"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-secondary topbarbtn"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    aria-label="Edit this page"
+                    title="Edit this page"
+                  >
+                    <i class="fab fa-github"></i>
+                  </button>
+                </a>
+
+                <!-- Full screen (wrap in <a> to have style consistency -->
+
+                <a class="full-screen-button"
+                  ><button
+                    type="button"
+                    class="btn btn-secondary topbarbtn"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    onclick="toggleFullScreen()"
+                    aria-label="Fullscreen mode"
+                    title="Fullscreen mode"
+                  >
+                    <i class="fas fa-expand"></i></button
+                ></a>
+
+                <!-- Launch buttons -->
+              </div>
+
+              <!-- Table of contents -->
+              <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+                <div class="tocsection onthispage pt-5 pb-3">
+                  <i class="fas fa-list"></i> Contents
+                </div>
+                <nav id="bd-toc-nav" aria-label="Page">
+                  <ul class="visible nav section-nav flex-column">
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a class="reference internal nav-link" href="#create-iso">
+                        Create ISO
+                      </a>
+                    </li>
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a class="reference internal nav-link" href="#install">
+                        Install
+                      </a>
+                    </li>
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a
+                        class="reference internal nav-link"
+                        href="#remove-macos"
+                      >
+                        Remove macOS
+                      </a>
+                    </li>
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a class="reference internal nav-link" href="#bitlocker">
+                        BitLocker
+                      </a>
+                    </li>
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a
+                        class="reference internal nav-link"
+                        href="#restore-macos"
+                      >
+                        Restore macOS
+                      </a>
+                    </li>
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a
+                        class="reference internal nav-link"
+                        href="#tweaks-and-software"
+                      >
+                        Tweaks and Software
+                      </a>
+                      <ul class="nav section-nav flex-column">
+                        <li class="toc-h3 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#registry-settings"
+                          >
+                            Registry Settings
+                          </a>
+                        </li>
+                        <li class="toc-h3 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#remove-bloat"
+                          >
+                            Remove Bloat
+                          </a>
+                        </li>
+                        <li class="toc-h3 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#wsl2-and-ubuntu"
+                          >
+                            WSL2 and Ubuntu
+                          </a>
+                          <ul class="nav section-nav flex-column">
+                            <li class="toc-h4 nav-item toc-entry">
+                              <a
+                                class="reference internal nav-link"
+                                href="#ssh-agent"
+                              >
+                                SSH Agent
+                              </a>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li class="toc-h2 nav-item toc-entry">
+                      <a class="reference internal nav-link" href="#comments">
+                        Comments
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div id="main-content" class="row">
+            <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+              <!-- Table of contents that is only displayed when printing the page -->
+              <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Installing Windows 11 on a Mac</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                  <div id="jb-print-toc">
+                    <div>
+                      <h2>Contents</h2>
+                    </div>
+                    <nav aria-label="Page">
+                      <ul class="visible nav section-nav flex-column">
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#create-iso"
+                          >
+                            Create ISO
+                          </a>
+                        </li>
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#install"
+                          >
+                            Install
+                          </a>
+                        </li>
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#remove-macos"
+                          >
+                            Remove macOS
+                          </a>
+                        </li>
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#bitlocker"
+                          >
+                            BitLocker
+                          </a>
+                        </li>
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#restore-macos"
+                          >
+                            Restore macOS
+                          </a>
+                        </li>
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#tweaks-and-software"
+                          >
+                            Tweaks and Software
+                          </a>
+                          <ul class="nav section-nav flex-column">
+                            <li class="toc-h3 nav-item toc-entry">
+                              <a
+                                class="reference internal nav-link"
+                                href="#registry-settings"
+                              >
+                                Registry Settings
+                              </a>
+                            </li>
+                            <li class="toc-h3 nav-item toc-entry">
+                              <a
+                                class="reference internal nav-link"
+                                href="#remove-bloat"
+                              >
+                                Remove Bloat
+                              </a>
+                            </li>
+                            <li class="toc-h3 nav-item toc-entry">
+                              <a
+                                class="reference internal nav-link"
+                                href="#wsl2-and-ubuntu"
+                              >
+                                WSL2 and Ubuntu
+                              </a>
+                              <ul class="nav section-nav flex-column">
+                                <li class="toc-h4 nav-item toc-entry">
+                                  <a
+                                    class="reference internal nav-link"
+                                    href="#ssh-agent"
+                                  >
+                                    SSH Agent
+                                  </a>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="toc-h2 nav-item toc-entry">
+                          <a
+                            class="reference internal nav-link"
+                            href="#comments"
+                          >
+                            Comments
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div
+                  class="tex2jax_ignore mathjax_ignore section"
+                  id="installing-windows-11-on-a-mac"
+                >
+                  <h1>
+                    Installing Windows 11 on a Mac<a
+                      class="headerlink"
+                      href="#installing-windows-11-on-a-mac"
+                      title="Permalink to this headline"
+                      >¶</a
+                    >
+                  </h1>
+                  <p>
+                    This guide lays out the steps I take to install Windows 11
+                    on my Apple computers using a custom ISO. This allows me to
+                    bypass the current TPM 2.0 requirement, since at this time
+                    Boot Camp does not provide TPM 2.0 to Windows.
+                  </p>
+                  <div class="section" id="create-iso">
+                    <h2>
+                      Create ISO<a
+                        class="headerlink"
+                        href="#create-iso"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <a
+                      class="reference external image-reference"
+                      href="https://i.imgur.com/1J45UMB.png"
+                      ><img
+                        alt="https://i.imgur.com/1J45UMBh.png"
+                        src="https://i.imgur.com/1J45UMBh.png"
+                    /></a>
+                    <table class="colwidths-auto table">
+                      <thead>
+                        <tr class="row-odd">
+                          <th class="head"><p>File Name</p></th>
+                          <th class="head">
+                            <p>sha1sum / Get-FileHash -Algorithm SHA1</p>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="row-even">
+                          <td><p>Win10_21H1_English_x64.iso</p></td>
+                          <td>
+                            <p>78AA5FA0FD332EE0822EF5A533CD2CFE12333274</p>
+                          </td>
+                        </tr>
+                        <tr class="row-odd">
+                          <td><p>Win11_English_x64v1.iso</p></td>
+                          <td>
+                            <p>9CBBB18B244511BF1D4C68A33FE6EE35D2EDA2AE</p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>
+                      The key ingredient in this guide is the custom ISO we’ll
+                      be creating. Essentially it’s a Windows 10 ISO, but with
+                      the payload file being replaced with the one from Windows
+                      11. Think of it as the Windows 10 installer installing
+                      Windows 11 for you.
+                    </p>
+                    <p>
+                      You’ll need to download the
+                      <a
+                        class="reference external"
+                        href="https://www.microsoft.com/software-download/windows11"
+                        >Windows 11 ISO</a
+                      >
+                      as well as a
+                      <a
+                        class="reference external"
+                        href="https://www.microsoft.com/en-us/software-download/windows10"
+                        >Windows 10 ISO</a
+                      >. The table above shows the files I used at the time of
+                      writing. To create the custom ISO follow these steps:
+                    </p>
+                    <dl class="simple myst">
+                      <dt>Mount the Windows 11 ISO</dt>
+                      <dd>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span>hdiutil attach Win11_English_x64v1.iso -mountpoint /Volumes/Win11
+</pre>
+                          </div>
+                        </div>
+                      </dd>
+                      <dt>
+                        Convert the Windows 10 ISO to a temporary writable image
+                        and mount it
+                      </dt>
+                      <dd>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span>hdiutil makehybrid Win10_21H1_English_x64.iso -hfs -o Win10_To_11.dmg
+hdiutil resize -size 6g Win10_To_11.dmg
+hdiutil attach Win10_To_11.dmg -readwrite -mountpoint /Volumes/Win10_To_11
+</pre>
+                          </div>
+                        </div>
+                      </dd>
+                      <dt>
+                        Copy the payload file from the Windows 11 ISO into the
+                        temporary image
+                      </dt>
+                      <dd>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span>chmod +w /Volumes/Win10_To_11/sources
+rm -fv /Volumes/Win10_To_11/sources/install.wim
+cp -v /Volumes/Win11/sources/install.wim /Volumes/Win10_To_11/sources/
+</pre>
+                          </div>
+                        </div>
+                      </dd>
+                      <dt>
+                        Unmount and convert the temporary image file into the
+                        final Boot Camp ISO file
+                      </dt>
+                      <dd>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span>hdiutil detach /Volumes/Win10_To_11
+hdiutil makehybrid Win10_To_11.dmg -udf -iso -eltorito-specification <span class="s2">&quot;( \</span>
+<span class="s2">    {no-emul-boot = 1; boot-load-size = 8; eltorito-boot = boot/etfsboot.com;}, \</span>
+<span class="s2">    {no-emul-boot = 1; boot-load-size = 2880; eltorito-boot = efi/microsoft/boot/efisys.bin; eltorito-platform = 0xEF;} \</span>
+<span class="s2">    )&quot;</span> -o Win11_English_x64v1_Boot_Camp.iso
+</pre>
+                          </div>
+                        </div>
+                      </dd>
+                      <dt>Clean up</dt>
+                      <dd>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span>rm -v Win10_To_11.dmg
+hdiutil detach /Volumes/Win11
+</pre>
+                          </div>
+                        </div>
+                      </dd>
+                    </dl>
+                    <div class="seealso admonition">
+                      <p class="admonition-title">For the Curious</p>
+                      <ul class="simple">
+                        <li>
+                          <p>
+                            The
+                            <code class="docutils literal notranslate"
+                              ><span class="pre"
+                                >eltorito-specification</span
+                              ></code
+                            >
+                            string is a NeXTSTEP plist defining the boot
+                            catalog. This isn’t needed when using the ISO
+                            exclusively with Boot Camp, but it’s needed to make
+                            the ISO properly bootable in both traditional BIOS
+                            and modern EFI non-Apple computers. This way you can
+                            use the same ISO with virtual machines on hosts
+                            without TPM 2.0.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <code class="docutils literal notranslate"
+                              ><span class="pre">boot-load-size</span></code
+                            >
+                            was derived from the eltorito-boot file size in
+                            bytes divided by the 512 byte sector size.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            I found the value of
+                            <code class="docutils literal notranslate"
+                              ><span class="pre">eltorito-platform</span></code
+                            >
+                            by doing a diff of the
+                            <a
+                              class="reference external"
+                              href="https://github.com/rhboot/dumpet"
+                              >dumpet</a
+                            >
+                            output.
+                          </p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="section" id="install">
+                    <h2>
+                      Install<a
+                        class="headerlink"
+                        href="#install"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <table class="table">
+                      <colgroup>
+                        <col style="width: 33%" />
+                        <col style="width: 33%" />
+                        <col style="width: 33%" />
+                      </colgroup>
+                      <tbody>
+                        <tr class="row-odd">
+                          <td>
+                            <div class="figure align-default" id="id1">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/TjJUZ4T.png"
+                                ><img
+                                  alt="https://i.imgur.com/TjJUZ4Th.png"
+                                  src="https://i.imgur.com/TjJUZ4Th.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >Boot Camp Assistant</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id1"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="figure align-default" id="id2">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/gF0n0oK.png"
+                                ><img
+                                  alt="https://i.imgur.com/gF0n0oKh.png"
+                                  src="https://i.imgur.com/gF0n0oKh.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >Installing Windows 11</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id2"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="figure align-default" id="id3">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/Cvx57Ac.png"
+                                ><img
+                                  alt="https://i.imgur.com/Cvx57Ach.png"
+                                  src="https://i.imgur.com/Cvx57Ach.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >Boot Camp Drivers</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id3"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>
+                      This step is pretty straightforward. You follow the same
+                      steps as you would when installing Windows 10 on your Mac.
+                    </p>
+                    <ol class="arabic simple">
+                      <li>
+                        <p>
+                          Run the <strong>Boot Camp Assistant</strong> and
+                          choose the ISO you’ve just created.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Since I plan on removing macOS at the end I gave all
+                          the space I could to the Windows partition.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Your Mac should automatically reboot into the Windows
+                          installer.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          After Windows 11 boots up the Boot Camp software
+                          installer should auto start to install drivers. Finish
+                          setting that up and reboot.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          If you plan on removing macOS don’t enable BitLocker
+                          yet.
+                        </p>
+                      </li>
+                    </ol>
+                    <div class="seealso admonition">
+                      <p class="admonition-title">For the Curious</p>
+                      <p>
+                        In case you were wondering how I took screen shots
+                        during the Windows installation:
+                      </p>
+                      <ol class="arabic simple">
+                        <li>
+                          <p>
+                            Downloaded
+                            <a
+                              class="reference external"
+                              href="https://www.nirsoft.net/utils/nircmd.html"
+                              >NirCmd</a
+                            >
+                            onto an SD card and inserted it into my MacBook.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            Pressed
+                            <kbd
+                              class="kbd compound docutils literal notranslate"
+                              ><kbd class="kbd docutils literal notranslate"
+                                >Shift</kbd
+                              >+<kbd class="kbd docutils literal notranslate"
+                                >F10</kbd
+                              ></kbd
+                            >
+                            to bring up a cmd.exe window.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            Ran
+                            <code class="docutils literal notranslate"
+                              ><span class="pre">diskpart</span></code
+                            >
+                            then
+                            <code class="docutils literal notranslate"
+                              ><span class="pre">LIST</span>
+                              <span class="pre">VOLUME</span></code
+                            >
+                            to find the SD card was mounted as
+                            <span class="guilabel">C:</span>.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            From <span class="guilabel">C:</span> I ran:
+                            <code class="docutils literal notranslate"
+                              ><span class="pre">nircmd</span>
+                              <span class="pre">savescreenshot</span>
+                              <span class="pre">screen.png</span></code
+                            >
+                          </p>
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                  <div class="section" id="remove-macos">
+                    <h2>
+                      Remove macOS<a
+                        class="headerlink"
+                        href="#remove-macos"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <table class="table">
+                      <colgroup>
+                        <col style="width: 50%" />
+                        <col style="width: 50%" />
+                      </colgroup>
+                      <tbody>
+                        <tr class="row-odd">
+                          <td>
+                            <div class="figure align-default" id="id4">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/58oJm7t.png"
+                                ><img
+                                  alt="https://i.imgur.com/58oJm7th.png"
+                                  src="https://i.imgur.com/58oJm7th.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >Before Repartitioning</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id4"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="figure align-default" id="id5">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/gPd6laP.png"
+                                ><img
+                                  alt="https://i.imgur.com/gPd6laPh.png"
+                                  src="https://i.imgur.com/gPd6laPh.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >After Repartitioning</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id5"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>
+                      This optional last step walks you through removing the
+                      macOS partition so your Windows installation can use the
+                      full capacity of your SSD. We’ll be using
+                      <a
+                        class="reference external"
+                        href="https://www.partitionwizard.com/free-partition-manager.html"
+                        >MiniTool Partition Wizard Free</a
+                      >
+                      to do the repartitioning from Windows.
+                    </p>
+                    <ol class="arabic simple">
+                      <li><p>Install and open MiniTool.</p></li>
+                      <li>
+                        <p>
+                          You should see four partitions, remove the middle two
+                          (<span class="guilabel">*:</span> and
+                          <span class="guilabel">*:OSXRESERVED</span>) so that
+                          only <span class="guilabel">*:EFI</span> and
+                          <span class="guilabel">C:BOOTCAMP</span> remains.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Resize <span class="guilabel">C:BOOTCAMP</span> to use
+                          up the empty space left by step 2.
+                        </p>
+                      </li>
+                      <li><p>Apply and reboot.</p></li>
+                    </ol>
+                  </div>
+                  <div class="section" id="bitlocker">
+                    <h2>
+                      BitLocker<a
+                        class="headerlink"
+                        href="#bitlocker"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <table class="table">
+                      <colgroup>
+                        <col style="width: 33%" />
+                        <col style="width: 33%" />
+                        <col style="width: 33%" />
+                      </colgroup>
+                      <tbody>
+                        <tr class="row-odd">
+                          <td>
+                            <div class="figure align-default" id="id6">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/EKbY5zv.png"
+                                ><img
+                                  alt="https://i.imgur.com/EKbY5zvh.png"
+                                  src="https://i.imgur.com/EKbY5zvh.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >Use gpedit.msc to disable the TPM check</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id6"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="figure align-default" id="id7">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/I6XTevu.png"
+                                ><img
+                                  alt="https://i.imgur.com/I6XTevuh.png"
+                                  src="https://i.imgur.com/I6XTevuh.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >Now you can enable BitLocker</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id7"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="figure align-default" id="id8">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/mop8gO7.png"
+                                ><img
+                                  alt="https://i.imgur.com/mop8gO7h.png"
+                                  src="https://i.imgur.com/mop8gO7h.png"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text"
+                                  >This error is expected</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id8"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>
+                      I always enable BitLocker full disk encryption on all of
+                      my machines. This is what I do to enable it on Macs (steps
+                      taken from:
+                      <a
+                        class="reference external"
+                        href="https://www.howtogeek.com/howto/6229/how-to-use-bitlocker-on-drives-without-tpm/"
+                        >https://www.howtogeek.com/howto/6229/how-to-use-bitlocker-on-drives-without-tpm/</a
+                      >).
+                    </p>
+                    <ul class="simple">
+                      <li>
+                        <p>
+                          Run as Administrator:
+                          <code class="docutils literal notranslate"
+                            ><span class="pre">gpedit.msc</span></code
+                          >
+                        </p>
+                        <ul>
+                          <li>
+                            <p>Computer Configuration</p>
+                            <ul>
+                              <li>
+                                <p>Administrative Templates</p>
+                                <ul>
+                                  <li>
+                                    <p>Windows Components</p>
+                                    <ul>
+                                      <li>
+                                        <p>BitLocker Drive Encryption</p>
+                                        <ul>
+                                          <li>
+                                            <p>Operating System Drives</p>
+                                            <ul>
+                                              <li>
+                                                <p>
+                                                  <strong
+                                                    >Require additional
+                                                    authentication at
+                                                    startup</strong
+                                                  >
+                                                </p>
+                                              </li>
+                                            </ul>
+                                          </li>
+                                        </ul>
+                                      </li>
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <p>Once you follow the above steps you’ll want to:</p>
+                    <ol class="arabic simple">
+                      <li>
+                        <p>Select <strong>Enabled</strong></p>
+                      </li>
+                      <li>
+                        <p>
+                          Make sure checkbox is checked:
+                          <strong
+                            >Allow BitLocker without a compatible TPM</strong
+                          >
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Leave subsequent fields configured to:
+                          <strong>Allow …</strong>
+                        </p>
+                      </li>
+                      <li><p>Click OK</p></li>
+                    </ol>
+                    <p>Now you can enable BitLocker the usual way.</p>
+                  </div>
+                  <div class="section" id="restore-macos">
+                    <h2>
+                      Restore macOS<a
+                        class="headerlink"
+                        href="#restore-macos"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <table class="table">
+                      <colgroup>
+                        <col style="width: 50%" />
+                        <col style="width: 50%" />
+                      </colgroup>
+                      <tbody>
+                        <tr class="row-odd">
+                          <td>
+                            <div class="figure align-default" id="id9">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/ICGyjGt.jpg"
+                                ><img
+                                  alt="https://i.imgur.com/ICGyjGth.jpg"
+                                  src="https://i.imgur.com/ICGyjGth.jpg"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text">Main Menu</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id9"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="figure align-default" id="id10">
+                              <a
+                                class="reference external image-reference"
+                                href="https://i.imgur.com/sDNXbxm.jpg"
+                                ><img
+                                  alt="https://i.imgur.com/sDNXbxmh.jpg"
+                                  src="https://i.imgur.com/sDNXbxmh.jpg"
+                              /></a>
+                              <p class="caption">
+                                <span class="caption-text">Erase the SSD</span
+                                ><a
+                                  class="headerlink"
+                                  href="#id10"
+                                  title="Permalink to this image"
+                                  >¶</a
+                                >
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>
+                      If you ever want to get your Mac back to macOS you can use
+                      the built-in “Internet Recovery” mode to download the
+                      latest macOS over the internet and remove Windows.
+                    </p>
+                    <ol class="arabic simple">
+                      <li><p>Power off the Mac.</p></li>
+                      <li>
+                        <p>
+                          Power on whilst holding
+                          <kbd class="kbd compound docutils literal notranslate"
+                            ><kbd class="kbd docutils literal notranslate"
+                              >Command</kbd
+                            >+<kbd class="kbd docutils literal notranslate"
+                              >Option</kbd
+                            >+<kbd class="kbd docutils literal notranslate"
+                              >R</kbd
+                            ></kbd
+                          >
+                          or
+                          <kbd class="kbd compound docutils literal notranslate"
+                            ><kbd class="kbd docutils literal notranslate"
+                              >Win</kbd
+                            >+<kbd class="kbd docutils literal notranslate"
+                              >Alt</kbd
+                            >+<kbd class="kbd docutils literal notranslate"
+                              >R</kbd
+                            ></kbd
+                          >
+                          and connect to WiFi.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          It will start Internet Recovery mode. It should take
+                          about 10 minutes to load depending on your internet
+                          connection.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          When you get to the main menu select
+                          <strong>Disk Utility</strong>.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Show all devices (under the View menu) and erase your
+                          SSD. I chose to format my SSD as APFS with GUID
+                          Partition Map.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Then close Disk Utility and proceed with “Reinstall
+                          macOS”.
+                        </p>
+                      </li>
+                    </ol>
+                  </div>
+                  <div class="section" id="tweaks-and-software">
+                    <h2>
+                      Tweaks and Software<a
+                        class="headerlink"
+                        href="#tweaks-and-software"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <p>
+                      This section is mainly for my own reference. It’s the
+                      usual software and configuration I use on most of my
+                      Windows machines.
+                    </p>
+                    <div class="section" id="registry-settings">
+                      <h3>
+                        Registry Settings<a
+                          class="headerlink"
+                          href="#registry-settings"
+                          title="Permalink to this headline"
+                          >¶</a
+                        >
+                      </h3>
+                      <dl class="simple myst">
+                        <dt>Require pressing Ctrl+Alt+Del to log in</dt>
+                        <dd>
+                          <div class="highlight-powershell notranslate">
+                            <div class="highlight">
+                              <pre><span></span><span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon&quot;</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">DisableCAD</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">0</span>
+</pre>
+                            </div>
+                          </div>
+                        </dd>
+                        <dt>Folder options</dt>
+                        <dd>
+                          <div class="highlight-powershell notranslate">
+                            <div class="highlight">
+                              <pre><span></span><span class="nv">$key</span> <span class="p">=</span> <span class="s2">&quot;HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced&quot;</span>
+<span class="c"># Set new explorer windows&#39; default folder to Downloads (undocumented).</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">LaunchTo</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">3</span>
+<span class="c"># Unhide system files and file extensions.</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">Hidden</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">HideFileExt</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">0</span>
+<span class="c"># Other folder options.</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">UseCompactMode</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">SeparateProcess</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span>
+</pre>
+                            </div>
+                          </div>
+                        </dd>
+                        <dt>
+                          Always default folder types to “Documents” instead of
+                          unpredictably opening in videos/images/etc. modes
+                        </dt>
+                        <dd>
+                          <div class="highlight-powershell notranslate">
+                            <div class="highlight">
+                              <pre><span></span><span class="nv">$pfx</span> <span class="p">=</span> <span class="s2">&quot;HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell&quot;</span>
+<span class="n">reg</span> <span class="n">delete</span> <span class="s2">&quot;$pfx\Bags&quot;</span> <span class="p">/</span><span class="n">f</span>
+<span class="n">reg</span> <span class="n">delete</span> <span class="s2">&quot;$pfx\BagMRU&quot;</span> <span class="p">/</span><span class="n">f</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;$pfx&quot;</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="s2">&quot;BagMRU Size&quot;</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">10000</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;$pfx\Bags\AllFolders\Shell&quot;</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">FolderType</span> <span class="p">/</span><span class="n">d</span> <span class="n">Documents</span>
+</pre>
+                            </div>
+                          </div>
+                        </dd>
+                        <dt>
+                          Fix default explorer search bar size and default
+                          folder view sorting and columns
+                        </dt>
+                        <dd>
+                          <div class="highlight-powershell notranslate">
+                            <div class="highlight">
+                              <pre><span></span><span class="nv">$pfx</span> <span class="p">=</span> <span class="s2">&quot;HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell&quot;</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="s2">&quot;$pfx\Bags\AllFolders\Shell&quot;</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">NavBar</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_BINARY</span> <span class="p">/</span><span class="n">d</span> <span class="n">000000000000000000000000000000008b000000870000003153505305d5cdd59c2e1b10939708002b2cf9ae6b0000005a000000007b00360044003800420042003300440033002d0039004400380037002d0034004100390031002d0041004200350036002d003400460033003000430046004600450046004500390046007d005f0057006900640074006800000013000000960000000000000000000000</span>
+<span class="nv">$key</span> <span class="p">=</span> <span class="s2">&quot;$pfx\Bags\AllFolders\Shell\{7D49D726-3C21-4F05-99AA-FDC2C9474656}&quot;</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">ColInfo</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_BINARY</span> <span class="p">/</span><span class="n">d</span> <span class="n">00000000000000000000000000000000fddfdffd100000000000000000000000040000001800000030f125b7ef471a10a5f102608c9eebac0a0000001001000030f125b7ef471a10a5f102608c9eebac0c0000005000000030f125b7ef471a10a5f102608c9eebac040000007800000030f125b7ef471a10a5f102608c9eebac0e00000090000000</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">GroupByDirection</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">1</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">GroupByKey</span><span class="p">:</span><span class="n">FMTID</span> <span class="p">/</span><span class="n">d</span> <span class="s2">&quot;{00000000-0000-0000-0000-000000000000}&quot;</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">GroupByKey</span><span class="p">:</span><span class="n">PID</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">0</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">GroupView</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">0</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="n">Mode</span> <span class="p">/</span><span class="n">t</span> <span class="n">REG_DWORD</span> <span class="p">/</span><span class="n">d</span> <span class="n">4</span>
+<span class="n">reg</span> <span class="n">add</span> <span class="nv">$key</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">v</span> <span class="nb">Sort </span><span class="p">/</span><span class="n">t</span> <span class="n">REG_BINARY</span> <span class="p">/</span><span class="n">d</span> <span class="n">000000000000000000000000000000000100000030f125b7ef471a10a5f102608c9eebac0a00000001000000</span>
+<span class="c"># Restart explorer.</span>
+<span class="n">taskkill</span> <span class="p">/</span><span class="n">f</span> <span class="p">/</span><span class="n">im</span> <span class="n">explorer</span><span class="p">.</span><span class="n">exe</span><span class="p">;</span> <span class="n">explorer</span><span class="p">.</span><span class="n">exe</span>
+</pre>
+                            </div>
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="section" id="remove-bloat">
+                      <h3>
+                        Remove Bloat<a
+                          class="headerlink"
+                          href="#remove-bloat"
+                          title="Permalink to this headline"
+                          >¶</a
+                        >
+                      </h3>
+                      <div class="highlight-powershell notranslate">
+                        <div class="highlight">
+                          <pre><span></span><span class="nb">Get-ProvisionedAppxPackage</span> <span class="n">-online</span> <span class="p">|</span>
+    <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DisplayName</span> <span class="o">-like</span> <span class="s2">&quot;Microsoft.Xbox*&quot;</span> <span class="o">-or</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DisplayName</span> <span class="o">-eq</span> <span class="s2">&quot;Microsoft.GamingApp&quot;</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span> <span class="nb">Remove-ProvisionedAppxPackage</span> <span class="n">-online</span> <span class="n">-allusers</span> <span class="n">-PackageName</span> <span class="nv">$_</span><span class="p">.</span><span class="n">PackageName</span> <span class="p">}</span>
+
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Disney</span><span class="p">.*</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Disney+</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">549981C3F5F10</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Cortana</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">BingNews</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Microsoft News</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">BingWeather</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Microsoft Weather</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">GetHelp</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Get Help</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Getstarted</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Tips</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">MicrosoftOfficeHub</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Office</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">MicrosoftSolitaireCollection</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Solitaire</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">MicrosoftStickyNotes</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Sticky Notes</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Todos</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Microsoft To Do</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">WindowsCommunicationsApps</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Mail and Calendar</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">WindowsFeedbackHub</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Feedback Hub</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">WindowsMaps</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Maps</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">YourPhone</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Your Phone</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">ZuneMusic</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Groove Music</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">ZuneVideo</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Movies &amp; TV</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">MicrosoftTeams</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Microsoft Teams</span>
+<span class="nb">Get-AppxPackage</span> <span class="n">-allusers</span> <span class="n">-name</span> <span class="n">SpotifyAB</span><span class="p">.</span><span class="n">SpotifyMusic</span> <span class="p">|</span><span class="nb">Remove-AppxPackage</span> <span class="n">-allusers</span>  <span class="c"># Spotify</span>
+</pre>
+                        </div>
+                      </div>
+                      <p>
+                        Afterwards I had to reboot to get the Microsoft Store to
+                        sync.
+                      </p>
+                    </div>
+                    <div class="section" id="wsl2-and-ubuntu">
+                      <h3>
+                        WSL2 and Ubuntu<a
+                          class="headerlink"
+                          href="#wsl2-and-ubuntu"
+                          title="Permalink to this headline"
+                          >¶</a
+                        >
+                      </h3>
+                      <p>In a Powershell admin window:</p>
+                      <div class="highlight-powershell notranslate">
+                        <div class="highlight">
+                          <pre><span></span><span class="c"># Enable Virtual Machine support on Windows</span>
+<span class="n">DISM</span> <span class="p">/</span><span class="n">online</span> <span class="p">/</span><span class="nb">enable-feature</span> <span class="p">/</span><span class="n">featurename</span><span class="p">:</span><span class="n">VirtualMachinePlatform</span>
+
+<span class="c"># Install WSL2 from the Microsoft Store</span>
+<span class="n">winget</span> <span class="n">install</span> <span class="p">-</span><span class="n">-name</span> <span class="s2">&quot;Windows Subsystem for Linux&quot;</span> <span class="n">-s</span> <span class="n">msstore</span>
+
+<span class="c"># Install Ubuntu (a new terminal window should open to complete setup)</span>
+<span class="n">wsl</span> <span class="p">-</span><span class="n">-install</span> <span class="n">Ubuntu</span>
+</pre>
+                        </div>
+                      </div>
+                      <p>From inside Ubuntu I setup zsh as my shell:</p>
+                      <div class="highlight-shell notranslate">
+                        <div class="highlight">
+                          <pre><span></span>sudo apt-get update <span class="o">&amp;&amp;</span> sudo apt-get install -y zsh
+</pre>
+                        </div>
+                      </div>
+                      <p>Then I install additional software:</p>
+                      <ol class="arabic simple">
+                        <li>
+                          <p>
+                            <a
+                              class="reference external"
+                              href="https://github.com/Robpol86/dotfiles"
+                              >https://github.com/Robpol86/dotfiles</a
+                            >
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <a
+                              class="reference external"
+                              href="https://gist.github.com/Robpol86/3d4730818816f866452e#installupdate-software"
+                              >https://gist.github.com/Robpol86/3d4730818816f866452e#installupdate-software</a
+                            >
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <a
+                              class="reference external"
+                              href="https://gist.github.com/Robpol86/3d4730818816f866452e#shellgit"
+                              >https://gist.github.com/Robpol86/3d4730818816f866452e#shellgit</a
+                            >
+                          </p>
+                        </li>
+                      </ol>
+                      <div class="section" id="ssh-agent">
+                        <h4>
+                          SSH Agent<a
+                            class="headerlink"
+                            href="#ssh-agent"
+                            title="Permalink to this headline"
+                            >¶</a
+                          >
+                        </h4>
+                        <p>
+                          This is how I setup WSL2 with an SSH agent that stores
+                          keys on the Windows host so that they persist after
+                          reboots. No more constantly running
+                          <code class="docutils literal notranslate"
+                            ><span class="pre">ssh-add</span></code
+                          >
+                          after booting!
+                        </p>
+                        <p>
+                          In a Powershell admin window enable the Windows
+                          ssh-agent:
+                        </p>
+                        <div class="highlight-powershell notranslate">
+                          <div class="highlight">
+                            <pre><span></span><span class="nb">Set-Service</span> <span class="n">-StartupType</span> <span class="n">Automatic</span> <span class="n">ssh-agent</span>
+<span class="nb">Start-Service</span> <span class="n">ssh-agent</span>
+</pre>
+                          </div>
+                        </div>
+                        <p>Then from inside Ubuntu I run:</p>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span><span class="c1"># Install npiperelay into C:\Users\Public\Libraries so multiple Windows users can use this feature</span>
+wget https://github.com/jstarks/npiperelay/releases/download/v0.1.0/npiperelay_windows_amd64.zip
+unzip npiperelay_windows_amd64.zip npiperelay.exe -d /mnt/c/Users/Public/Libraries/
+rm npiperelay_windows_amd64.zip
+
+<span class="c1"># Enable the ssh-agent from the Linux side when you start new shell sessions</span>
+<span class="c1"># If you use bash replace the file paths with /etc/profile or /etc/bash.bashrc</span>
+sudo tee -a /etc/zsh/zshenv <span class="o">&lt;&lt;&lt;</span> <span class="s1">&#39;export SSH_AUTH_SOCK=&quot;$HOME/.ssh/agent.sock&quot;&#39;</span>
+sudo tee -a /etc/zsh/zlogin <span class="s">&lt;&lt;&#39;EOF&#39;</span>
+<span class="s">if ! ss -a |grep -q &quot;$SSH_AUTH_SOCK&quot;; then</span>
+<span class="s">    rm -f &quot;$SSH_AUTH_SOCK&quot;</span>
+<span class="s">    setsid socat &quot;UNIX-LISTEN:$SSH_AUTH_SOCK,fork&quot; &quot;EXEC:/mnt/c/Users/Public/Libraries/npiperelay.exe -ei -s //./pipe/openssh-ssh-agent,nofork&quot;</span>
+<span class="s">fi</span>
+<span class="s">EOF</span>
+</pre>
+                          </div>
+                        </div>
+                        <p>
+                          Finally open a new Windows Terminal tab and run this
+                          from Ubuntu to verify communication with the Windows
+                          ssh-agent:
+                        </p>
+                        <div class="highlight-bash notranslate">
+                          <div class="highlight">
+                            <pre><span></span><span class="c1"># Should say &quot;The agent has no identities.&quot;</span>
+ssh-add -l
+
+<span class="c1"># I get: robpol86 ... 0:00 socat UNIX-LISTEN:/home/robpol86/.ssh/agent.sock,fork \</span>
+<span class="c1">#           EXEC:/mnt/c/Users/Public/Libraries/npiperelay.exe -ei \</span>
+<span class="c1">#           -s //./pipe/openssh-ssh-agent,nofork</span>
+ps aux <span class="p">|</span>grep -v grep <span class="p">|</span>grep ssh-agent
+</pre>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="section" id="comments">
+                    <h2>
+                      Comments<a
+                        class="headerlink"
+                        href="#comments"
+                        title="Permalink to this headline"
+                        >¶</a
+                      >
+                    </h2>
+                    <div
+                      data-disqus-identifier="Installing Windows 11 on a Mac"
+                      data-disqus-shortname="rob86wiki"
+                      id="disqus_thread"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Previous / next buttons -->
+              <div class="prev-next-area">
+                <a
+                  class="left-prev"
+                  id="prev-link"
+                  href="photo_albums.html"
+                  title="previous page"
+                >
+                  <i class="fas fa-angle-left"></i>
+                  <div class="prev-next-info">
+                    <p class="prev-next-subtitle">previous</p>
+                    <p class="prev-next-title">Photo Albums</p>
+                  </div>
+                </a>
+                <a
+                  class="right-next"
+                  id="next-link"
+                  href="raspberry_pi_luks.html"
+                  title="next page"
+                >
+                  <div class="prev-next-info">
+                    <p class="prev-next-subtitle">next</p>
+                    <p class="prev-next-title">
+                      Raspberry Pi LUKS Root Encryption
+                    </p>
+                  </div>
+                  <i class="fas fa-angle-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <footer class="footer">
+            <p>
+              &copy; Copyright 2022, Robpol86.<br />
+              Last updated on May 8, 2022, 9:29:20 PM UTC.<br />
+            </p>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  </body>
+</html>

@@ -1,0 +1,3 @@
+User-agent: *
+
+Sitemap: https://rob86stage.robpol86.com/sitemap.xml
