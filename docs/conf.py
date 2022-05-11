@@ -17,7 +17,7 @@ GIT_URL = "https://github.com/Robpol86/robpol86.com"
 
 # General configuration.
 copyright = f'{time.strftime("%Y")}, Robpol86'  # pylint: disable=redefined-builtin  # noqa
-html_last_updated_fmt = None
+html_last_updated_fmt = f"%c {time.tzname[time.localtime().tm_isdst]}"
 exclude_patterns = []
 extensions = [
     "myst_parser",  # https://myst-parser.readthedocs.io/en/latest/index.html
@@ -26,7 +26,7 @@ extensions = [
     "sphinx_disqus.disqus",  # https://sphinx-disqus.readthedocs.io
     "sphinx_external_toc",  # https://sphinx-external-toc.readthedocs.io
     "sphinx_imgur.imgur",  # https://sphinx-imgur.readthedocs.io
-    # "sphinx_last_updated_by_git",  # https://github.com/mgeier/sphinx-last-updated-by-git
+    "sphinx_last_updated_by_git",  # https://github.com/mgeier/sphinx-last-updated-by-git
     "sphinx_panels",  # https://sphinx-panels.readthedocs.io
     "sphinx_sitemap",  # https://github.com/jdillard/sphinx-sitemap
     "sphinxcontrib.youtube",  # https://github.com/sphinx-contrib/youtube
