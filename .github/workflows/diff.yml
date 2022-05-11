@@ -88,7 +88,8 @@ jobs:
       - name: Git Status
         id: git_status
         run: |
-          git -C html status --porcelain --untracked-files=all |tee git_status.txt
+          git -C html add .
+          git -C html status --porcelain |tee git_status.txt
           if [ -s git_status.txt ]; then
             echo "::set-output name=changed::true"
           else
