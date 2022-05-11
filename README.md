@@ -25,4 +25,3 @@ branch and tag pushes trigger a deployment to staging, whilst pull requests only
 
 * Test with no html_old branch.
 * Test add only again.
-* Test patch files same name different directories.
