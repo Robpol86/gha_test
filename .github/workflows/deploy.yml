@@ -10,7 +10,7 @@ on:
 env:
   BASEURL_PROD: https://robpol86.com/
   BASEURL_STAGE: https://rob86stage.robpol86.com/
-  HTML_ROOT: ./build/html/
+  HTML_ROOT: ./_build/html/
   IS_PROD: "${{ startsWith(github.ref, 'refs/tags/') && 'true' || '' }}"
   PYTHON_VERSION: "3.10"
 
