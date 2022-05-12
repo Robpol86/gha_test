@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  push:
+    # Staging
+    branches: ["**"]
+    # Production
+    tags: ["[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]"]
+
+env:
+  BASEURL_PROD: https://robpol86.com/
+  BASEURL_STAGE: https://rob86stage.robpol86.com/
+  HTML_ROOT: ./build/html/
+  IS_PROD: "${{ startsWith(github.ref, 'refs/tags/') && 'true' || '' }}"
+  PYTHON_VERSION: "3.10"
+
+jobs:
+
+  build:
+    name: Build HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Initialize dependencies
+        uses: Robpol86/actions-init-deps-py@v3
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+          no-dev: "true"
+      - name: Build docs
+        env:
+          SPHINX_HTML_BASEURL: "${{ env.IS_PROD && env.BASEURL_PROD || env.BASEURL_STAGE }}"
+        run: make docs
+      - name: Store HTML as temporary artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: html
+          if-no-files-found: error
+          path: "${{ env.HTML_ROOT }}"
+
+  changelog:
+    name: Read Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          path: repo
