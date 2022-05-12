@@ -64,5 +64,10 @@ jobs:
           path: repo
       - name: Isolate section
         env:
-          VERSION: "${{ needs.build.outputs.version }}"
-        run: printenv VERSION
+          AWK_PROGRAM: |
+            $0 ~ pattern {
+              flag = 1
+            }
+            / TODO
+          SECTION: "[${{ needs.build.outputs.version }}]"  # e.g. [2022.4.1]
+        run: echo awk -v pattern="^## ${SECTION}$" "$AWK_PROGRAM" repo/CHANGELOG.md
