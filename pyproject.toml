@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "Robpol86.com"
-version = "0.0.1"
+version = "2022.4.1"
 description = "My personal website."
 readme = "README.md"
 authors = ["Robpol86 <robpol86@gmail.com>"]
@@ -17,28 +17,25 @@ classifiers = [
 repository = "https://github.com/Robpol86/robpol86.com"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 # Project dependencies.
 myst-parser = {version = "*", extras = ["linkify"]}
-pygments = "*"
-sphinx = "*"
-sphinx-autobuild = "*"
-sphinx-book-theme = "*"
+Sphinx = "*"
+sphinx-book-theme = "0.2.0"  # TODO investigate CSS changes. # ">=0.3.2"
+sphinx-carousel = "*"
 sphinx-copybutton = "*"
 sphinx-disqus = "*"
 sphinx-external-toc = "*"
 sphinx-imgur = "*"
 sphinx-last-updated-by-git = "*"
 sphinx-notfound-page = "*"
-sphinx-panels = "*"
 sphinx-sitemap = "*"
 sphinxcontrib-youtube = "*"
 sphinxext-opengraph = "*"
 
 [tool.poetry.dev-dependencies]
-# Project.
-myst-parser = "^0.16"  # TODO investigate &amp; bug.
-sphinx-book-theme = "0.2.0"  # TODO investigate CSS changes.
+# IDE.
+docutils-stubs = "*"
 # Linters.
 black = "*"
 flake8 = "*"
@@ -47,19 +44,40 @@ flake8-import-order = "*"
 pep8-naming = "*"
 pylint = "*"
 # Tests.
+beautifulsoup4 = "*"
+coverage = {version = "*", extras = ["toml"]}
 pytest = "*"
+pytest-cov = "*"
 pytest-icdiff = "*"
+# Docs.
+sphinx-autobuild = "*"
 
 [tool.black]
 line-length = 125
-target-version = ["py37", "py38", "py39", "py310"]
+target-version = ["py38", "py39", "py310"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "#\\s*pragma: no cover",
+    "^\\s*from",
+    "^\\s*import",
+    "^\\s*raise AssertionError",
+    "^\\s*raise NotImplementedError",
+]
 
 [tool.pylint.FORMAT]
-disable = ["fixme"]
 good-names = ["i", "j", "k", "ex", "Run", "_", "x", "y", "z", "fd"]
 ignore = [".venv/*", "build/*", "dist/*"]
 max-line-length = 125
 reports = false
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "consider-using-f-string",
+    "duplicate-code",
+    "fixme",
+    "too-many-arguments",
+]
 
 [tool.pylint.SIMILARITIES]
 ignore-imports = true
@@ -69,5 +87,5 @@ min-similarity-lines = 7
 ignored-modules = ["distutils", "py"]
 
 [tool.pytest.ini_options]
-addopts = "--durations=15 --showlocals --verbose --verbose"
+addopts = "--cov-branch --cov-report=term-missing --durations=15 --showlocals --verbose --verbose"
 log_level = "DEBUG"
