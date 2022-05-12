@@ -39,15 +39,15 @@ jobs:
           name: html
           if-no-files-found: error
           path: "${{ env.HTML_ROOT }}"
-#      - name: Get version
-#        id: version
-#        run: printenv GITHUB_REF_NAME |awk '{split($1, ymd, "-"); printf "::set-output name=VERSION::%d.%d.%d\n", ymd[1], ymd[2], ymd[2]}'
       - name: Get version
-        if: "! env.IS_PROD"
         id: version
-        run: poetry version |awk '{printf "::set-output name=VERSION::%s\n", $2}'
+        env:
+          AWK_PROGRAM_PROD: '{split($1, ymd, "-"); printf "::set-output name=VERSION::%d.%d.%d\n", ymd[1], ymd[2], ymd[2]}'
+          AWK_PROGRAM_STAGE: '{printf "::set-output name=VERSION::%s\n", $2}'
+          COMMAND: "${{ env.IS_PROD && 'printenv GITHUB_REF_NAME' || 'poetry version' }}"
+        run: ${{ env.COMMAND }} |awk '${{ env.IS_PROD && env.AWK_PROGRAM_PROD || env.AWK_PROGRAM_STAGE }}'
     outputs:
-      version: "${{ env.IS_PROD && github.ref_name || steps.version.outputs.VERSION }}"
+      version: "${{ steps.version.outputs.VERSION }}"
 
   changelog:
     name: Read Changelog
