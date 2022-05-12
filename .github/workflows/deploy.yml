@@ -39,6 +39,9 @@ jobs:
           name: html
           if-no-files-found: error
           path: "${{ env.HTML_ROOT }}"
+#      - name: Get version
+#        id: version
+#        run: printenv GITHUB_REF_NAME |awk '{split($1, ymd, "-"); printf "::set-output name=VERSION::%d.%d.%d\n", ymd[1], ymd[2], ymd[2]}'
       - name: Get version
         if: "! env.IS_PROD"
         id: version
