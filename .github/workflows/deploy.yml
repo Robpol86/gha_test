@@ -89,4 +89,4 @@ jobs:
               if (!flag) error("No section found")
             }
           VERSION: "${{ needs.build.outputs.version }}"  # e.g. 2022.4.1
-        run: awk -v section_file=section.md -v VERSION="$VERSION" "$AWK_PROGRAM" repo/CHANGELOG.md && echo $? && ls -lah
+        run: awk -v section_file=section.md -v VERSION="$VERSION" "$AWK_PROGRAM" repo/CHANGELOG.md
