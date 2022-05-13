@@ -1,5 +1,7 @@
 name: Deploy
 
+# TODO: first section always latest, don't overengineer
+
 on:
   push:
     # Staging
