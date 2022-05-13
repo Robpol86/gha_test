@@ -68,16 +68,25 @@ jobs:
       - name: Isolate first section
         env:
           AWK_PROGRAM: |
+            function error(msg) {
+              print msg > "/dev/stderr"
+              exit 1
+            }
+            BEGIN {
+              printf "" > section_file
+            }
             /^## \[[0-9]/ {
-              if (flag) exit
+              if (flag) exit 0
               flag = 1
+              if (!match($0, /^## \[([0-9]{4}[.][0-9]{1,2}[.][0-9]{1,2})]$/, a)) error("First section invalid format")
+              if (a[1] != VERSION) error("Section doesnt match version")
             }
             flag {
               print
-              print >> "section.md"
+              print >> section_file
             }
             END {
-              exit !flag
+              if (!flag) error("No section found")
             }
           VERSION: "${{ needs.build.outputs.version }}"  # e.g. 2022.4.1
-        run: awk -v VERSION="$VERSION" "$AWK_PROGRAM" repo/CHANGELOG.md
+        run: awk -v section_file=section.md -v VERSION="$VERSION" "$AWK_PROGRAM" repo/CHANGELOG.md && echo $? && ls -lah
