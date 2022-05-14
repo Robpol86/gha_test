@@ -44,8 +44,9 @@ jobs:
         id: version
         env:
           AWK_PROGRAM: |
+            @include ".github/workflows/deploy.awk"
             match($0, /([0-9]{4})[^0-9]([0-9]{1,2})[^0-9]([0-9]{1,2})[[:space:]]*$/, ymd) {
-              printf("::set-output name=VERSION::%d.%d.%d\n", ymd[1], ymd[2], ymd[3])
+              setOutput("VERSION", sprintf("%d.%d.%d", ymd[1], ymd[2], ymd[3]))
               flag = 1
               exit
             }
@@ -63,7 +64,7 @@ jobs:
               found = 1
               if (!match($0, /^## \[([0-9]{4}[.][0-9]{1,2}[.][0-9]{1,2})]$/, a)) error("First section invalid format")
               if (a[1] != version) error("First section doesnt match version")
-              printf("::set-output name=NR::%d\n", NR+1)
+              setOutput("NR", NR+1)
               exit 0
             }
             END {
