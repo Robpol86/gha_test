@@ -111,13 +111,15 @@ jobs:
             }
             /^.+/ {
               found = 1
+            }
+            found {
               lines[linesLen++] = $0
               printf(">%s<\n", $0)
             }
             END {
+              # Drop trailing empty lines.
               printf("Before: lines: %d\n", length(lines))
               while (length(lines) && length(lines[length(lines)-1]) == 0) {
-                printf("DELETE: >%s<", lines[length(lines)-1])
                 delete lines[length(lines)-1]
               }
               printf("After: lines: %d\n", length(lines))
