@@ -108,12 +108,13 @@ jobs:
             }
             /^.+/ {
               found = 1
-              descriptionLines[descriptionLinesLen++] = $0
+              lines[linesLen++] = $0
             }
             /^## / {
               exit 0
             }
             END {
-              printf("TODO: lines: %d\n", descriptionLinesLen)
+              // while (length(lines[length(lines)]) == 0) delete lines[length(lines)]
+              printf("TODO: lines: %d\n", length(lines))
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
