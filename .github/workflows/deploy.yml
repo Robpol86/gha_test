@@ -94,6 +94,7 @@ jobs:
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
       - name: Get description from changelog if available
+        id: description
         env:
           AWK_PROGRAM: |
             @include ".github/workflows/deploy.awk"
@@ -129,6 +130,9 @@ jobs:
                 else
                   description = description "%0D" line
               }
-              setOutput("description", description)
+              setOutput("DESCRIPTION", description)
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
+    outputs:
+      TITLE: "${{ steps.title.outputs.TITLE }}"
+      DESCRIPTION: "${{ steps.title.outputs.DESCRIPTION }}"
