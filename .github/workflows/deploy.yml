@@ -79,7 +79,10 @@ jobs:
             BEGIN {
               nr = int("${{ steps.section_start.outputs.NR }}")
             }
-            /^.+/ && NR >= nr {
+            NR < nr {
+              next
+            }
+            /^.+/ {
               found = 1
               if (!match($0, /^[A-Z]/)) error("Invalid title: " + $0)
               setOutput("TITLE", $0)
@@ -88,5 +91,26 @@ jobs:
             }
             END {
               if (!found) error("No title found")
+            }
+        run: awk "$AWK_PROGRAM" CHANGELOG.md
+      - name: Get description from changelog if available
+        env:
+          AWK_PROGRAM: |
+            @include ".github/workflows/deploy.awk"
+            BEGIN {
+              nr = int("${{ steps.title.outputs.NR }}")
+            }
+            NR < nr {
+              next
+            }
+            /^$/ && !found {
+              next  # Skip empty lines after title.
+            }
+            /^.+/ {
+              found = 1
+              print // TODO
+            }
+            /^## / {
+              exit 0
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
