@@ -144,8 +144,10 @@ jobs:
     steps:
       - env:
           TITLE: "${{ needs.build.outputs.TITLE }}"
-          DESCRIPTION: "${{ needs.build.outputs.TITLE }}"
+          DESCRIPTION: "${{ needs.build.outputs.DESCRIPTION }}"
         run: |
           set -eux
           printenv TITLE
           printenv DESCRIPTION
+
+# TODO test all cases.
