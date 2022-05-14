@@ -108,9 +108,12 @@ jobs:
             }
             /^.+/ {
               found = 1
-              print($0) // TODO
+              descriptionLines[descriptionLinesLen++] = $0
             }
             /^## / {
               exit 0
+            }
+            END {
+              printf("TODO: lines: %d\n", descriptionLinesLen)
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
