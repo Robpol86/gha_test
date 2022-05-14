@@ -77,7 +77,7 @@ jobs:
           AWK_PROGRAM: |
             @include ".github/workflows/deploy.awk"
             BEGIN {
-              nr = "${{ steps.section_start.outputs.NR }}"
+              nr = int("${{ steps.section_start.outputs.NR }}")
             }
             /^.+/ && NR >= nr {
               found = 1
