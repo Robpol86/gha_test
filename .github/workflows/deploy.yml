@@ -55,7 +55,7 @@ jobs:
         id: section_start
         env:
           AWK_PROGRAM: |
-            @include "repo/.github/workflows/deploy.awk"
+            @include ".github/workflows/deploy.awk"
             BEGIN {
               version = "${{ steps.version.outputs.VERSION }}"  # e.g. 2022.4.1
             }
