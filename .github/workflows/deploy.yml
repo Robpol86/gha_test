@@ -1,7 +1,5 @@
 name: Deploy
 
-# TODO: first section always latest, don't overengineer
-
 on:
   pull_request:
   push:
@@ -53,6 +51,7 @@ jobs:
             }
             END { exit !flag }
         run: ${{ env.IS_PROD && 'printenv GITHUB_REF_NAME' || 'poetry version' }} |awk "$AWK_PROGRAM"
+
     outputs:
       version: "${{ steps.version.outputs.VERSION }}"
 
@@ -68,10 +67,7 @@ jobs:
       - name: Isolate first section
         env:
           AWK_PROGRAM: |
-            function error(msg) {
-              print msg > "/dev/stderr"
-              exit 1
-            }
+            @include "repo/deploy.yml"
             BEGIN {
               printf "" > section_file
             }
