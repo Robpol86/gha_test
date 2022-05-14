@@ -124,7 +124,11 @@ jobs:
               for (idx in lines) {
                 # https://github.community/t/set-output-truncates-multiline-strings/16852/2
                 line = gensub(/%/, "%25", "g", lines[idx])
-                printf("LINE: >%s<\n", line)  # TODO remove
+                if (idx == 0)
+                  description = line
+                else
+                  description = description "%0D" line
               }
+              setOutput("description", description)
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
