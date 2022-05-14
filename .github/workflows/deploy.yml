@@ -63,7 +63,7 @@ jobs:
               found = 1
               if (!match($0, /^## \[([0-9]{4}[.][0-9]{1,2}[.][0-9]{1,2})]$/, a)) error("First section invalid format")
               if (a[1] != version) error("First section doesnt match version")
-              printf("::set-output name=NR::%d\n" NR+1)
+              printf("::set-output name=NR::%d\n", NR+1)
               exit 0
             }
             END {
