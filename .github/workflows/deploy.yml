@@ -71,3 +71,22 @@ jobs:
               if (!found) error("No section found for version " + version)
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
+      - name: Get title from changelog
+        id: title
+        env:
+          AWK_PROGRAM: |
+            @include ".github/workflows/deploy.awk"
+            BEGIN {
+              nr = "${{ steps.section_start.outputs.NR }}"
+            }
+            /^.+/ && NR >= nr {
+              found = 1
+              if (!match($0, /^[A-Z]/)) error("Invalid title: " + $0)
+              setOutput("TITLE", $0)
+              setOutput("NR", NR+1)
+              exit 0
+            }
+            END {
+              if (!found) error("No title found")
+            }
+        run: awk "$AWK_PROGRAM" CHANGELOG.md
