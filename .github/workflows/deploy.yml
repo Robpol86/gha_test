@@ -135,7 +135,7 @@ jobs:
         run: awk "$AWK_PROGRAM" CHANGELOG.md
     outputs:
       TITLE: "${{ steps.title.outputs.TITLE }}"
-      DESCRIPTION: "${{ steps.title.outputs.DESCRIPTION }}"
+      DESCRIPTION: "${{ steps.description.outputs.DESCRIPTION }}"
 
   todo:
     name: TODO
