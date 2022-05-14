@@ -51,38 +51,22 @@ jobs:
             }
             END { exit !flag }
         run: ${{ env.IS_PROD && 'printenv GITHUB_REF_NAME' || 'poetry version' }} |awk "$AWK_PROGRAM"
-
-    outputs:
-      version: "${{ steps.version.outputs.VERSION }}"
-
-  changelog:
-    name: Read Changelog
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-        with:
-          path: repo
-      - name: Isolate first section
+      - name: Find version in changelog
+        id: section_start
         env:
           AWK_PROGRAM: |
             @include "repo/.github/workflows/deploy.awk"
             BEGIN {
-              printf "" > section_file
+              version = "${{ steps.version.outputs.VERSION }}"  # e.g. 2022.4.1
             }
             /^## \[[0-9]/ {
-              if (flag) exit 0
-              flag = 1
+              found = 1
               if (!match($0, /^## \[([0-9]{4}[.][0-9]{1,2}[.][0-9]{1,2})]$/, a)) error("First section invalid format")
-              if (a[1] != VERSION) error("Section doesnt match version")
-            }
-            flag {
-              print
-              print >> section_file
+              if (a[1] != version) error("First section doesnt match version")
+              printf("::set-output name=NR::%d\n" NR+1)
+              exit 0
             }
             END {
-              if (!flag) error("No section found")
+              if (!found) error("No section found for version " + version)
             }
-          VERSION: "${{ needs.build.outputs.version }}"  # e.g. 2022.4.1
-        run: awk -v section_file=section.md -v VERSION="$VERSION" "$AWK_PROGRAM" repo/CHANGELOG.md
+        run: awk "$AWK_PROGRAM" CHANGELOG.md
