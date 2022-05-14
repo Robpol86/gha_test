@@ -130,6 +130,7 @@ jobs:
                 else
                   description = description "%0D" line
               }
+              # Print.
               setOutput("DESCRIPTION", description)
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
