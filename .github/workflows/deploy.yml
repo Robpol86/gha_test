@@ -67,7 +67,7 @@ jobs:
       - name: Isolate first section
         env:
           AWK_PROGRAM: |
-            @include "repo/deploy.yml"
+            @include "repo/.github/workflows/deploy.awk"
             BEGIN {
               printf "" > section_file
             }
