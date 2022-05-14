@@ -108,7 +108,7 @@ jobs:
             }
             /^.+/ {
               found = 1
-              print // TODO
+              print($0) // TODO
             }
             /^## / {
               exit 0
