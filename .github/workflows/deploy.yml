@@ -103,18 +103,23 @@ jobs:
             NR < nr {
               next
             }
+            /^## / {
+              exit 0
+            }
             /^$/ && !found {
               next  # Skip empty lines after title.
             }
             /^.+/ {
               found = 1
               lines[linesLen++] = $0
-            }
-            /^## / {
-              exit 0
+              printf(">%s<\n", $0)
             }
             END {
-              // while (length(lines[length(lines)]) == 0) delete lines[length(lines)]
-              printf("TODO: lines: %d\n", length(lines))
+              printf("Before: lines: %d\n", length(lines))
+              while (length(lines) && length(lines[length(lines)-1]) == 0) {
+                printf("DELETE: >%s<", lines[length(lines)-1])
+                delete lines[length(lines)-1]
+              }
+              printf("After: lines: %d\n", length(lines))
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
