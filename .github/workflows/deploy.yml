@@ -136,3 +136,16 @@ jobs:
     outputs:
       TITLE: "${{ steps.title.outputs.TITLE }}"
       DESCRIPTION: "${{ steps.title.outputs.DESCRIPTION }}"
+
+  todo:
+    name: TODO
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          TITLE: "${{ needs.build.outputs.TITLE }}"
+          DESCRIPTION: "${{ needs.build.outputs.TITLE }}"
+        run: |
+          set -eux
+          printenv TITLE
+          printenv DESCRIPTION
