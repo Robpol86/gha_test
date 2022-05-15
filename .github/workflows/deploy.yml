@@ -171,8 +171,6 @@ jobs:
           CF_URL: "https://api.cloudflare.com/client/v4/zones/5efb26a03250a8bc392727af05a39aba/purge_cache"
         run: echo curl -f "$CF_URL" -H "$CF_AUTH" --data '{"purge_everything":true}'
 
-# TODO test all cases.
-
   release:
     name: Create Release
     if: startsWith(github.ref, 'refs/tags/')  # env.IS_PROD
