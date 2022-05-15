@@ -38,8 +38,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: html
-          if-no-files-found: error
           path: "${{ env.HTML_ROOT }}"
+          if-no-files-found: error
       - name: Get version
         id: version
         env:
@@ -135,20 +135,19 @@ jobs:
             }
         run: awk "$AWK_PROGRAM" CHANGELOG.md
     outputs:
-      TITLE: "${{ steps.title.outputs.TITLE }}"
-      DESCRIPTION: "${{ steps.description.outputs.DESCRIPTION }}"
+      CL_TITLE: "${{ steps.title.outputs.TITLE }}"
+      CL_DESCRIPTION: "${{ steps.description.outputs.DESCRIPTION }}"
 
-  todo:
-    name: TODO
-    needs: build
+  publish:
+    name: Publish to NFSN
     runs-on: ubuntu-latest
+    needs: build
+    concurrency: "${{ github.workflow }}-${{ github.job }}"
     steps:
-      - env:
-          TITLE: "${{ needs.build.outputs.TITLE }}"
-          DESCRIPTION: "${{ needs.build.outputs.DESCRIPTION }}"
-        run: |
-          set -eux
-          printenv TITLE
-          printenv DESCRIPTION
+      - name: Fetch HTML files
+        uses: actions/download-artifact@v2
+        with:
+          name: html
+          path: "${{ env.HTML_ROOT }}"
 
 # TODO test all cases.
