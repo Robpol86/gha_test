@@ -121,6 +121,10 @@ jobs:
               while (length(lines) && length(lines[length(lines)-1]) == 0) {
                 delete lines[length(lines)-1]
               }
+              if (!length(lines)) {
+                print("No description available")
+                exit 0
+              }
               # Join array.
               for (idx in lines) {
                 # https://github.community/t/set-output-truncates-multiline-strings/16852/2
