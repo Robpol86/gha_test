@@ -10,6 +10,8 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 
 ## [1234.5.6]
 
+- Test
+
 ## [2022.4.1]
 
 Installing %Windows% 11 on a Mac: WSL2 ssh-agent steps
