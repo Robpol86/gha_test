@@ -168,3 +168,23 @@ jobs:
         run: echo curl -f "$CF_URL" -H "$CF_AUTH" --data '{"purge_everything":true}'
 
 # TODO test all cases.
+
+  release:
+    name: Create Release
+    if: env.IS_PROD
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - name: Fetch HTML files
+        uses: actions/download-artifact@v2
+        with:
+          name: html
+          path: html
+      - name: Archive HTML files
+        run: tar -czvf html.tar.gz html/
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "${{ needs.build.outputs.CL_TITLE }}"
+          body: "${{ needs.build.outputs.CL_DESCRIPTION }}"
+          files: html.tar.gz
