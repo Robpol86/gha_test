@@ -157,5 +157,9 @@ jobs:
             ssh.phx.nearlyfreespeech.net,208.94.116.211
             ecdsa-sha2-nistp256
             AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEkD1YQOPCy0w/g/OqpBys337RAtyK/HDmW2i0BUW4mnN5em2jkB69nhJP91nU8s05OfB1MgxVVzyXc80Ounbzw=
+      - name: Rsync
+        env:
+          SSH_USER: "${{ env.IS_PROD && secrets.NFSN_SSH_USER_PROD || secrets.NFSN_SSH_USER_STAGE }}"
+        run: echo rsync -rptcivh --delete-after --stats "$HTML_ROOT" "$SSH_USER@ssh.phx.nearlyfreespeech.net:/home/public"
 
 # TODO test all cases.
