@@ -148,7 +148,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: html
-          path: "${{ env.HTML_ROOT }}"
+          path: html
       - name: Setup SSH
         uses: shimataro/ssh-key-action@v2
         with:
@@ -160,6 +160,11 @@ jobs:
       - name: Rsync
         env:
           SSH_USER: "${{ env.IS_PROD && secrets.NFSN_SSH_USER_PROD || secrets.NFSN_SSH_USER_STAGE }}"
-        run: echo rsync -rptcivh --delete-after --stats "$HTML_ROOT" "$SSH_USER@ssh.phx.nearlyfreespeech.net:/home/public"
+        run: echo rsync -rptcivh --delete-after --stats ./html/ "$SSH_USER@ssh.phx.nearlyfreespeech.net:/home/public"
+      - name: Purge Cloudflare Cache
+        env:
+          CF_AUTH: "Authorization: Bearer ${{ secrets.TOKEN_CF_PURGE_CACHE }}"
+          CF_URL: "https://api.cloudflare.com/client/v4/zones/5efb26a03250a8bc392727af05a39aba/purge_cache"
+        run: echo curl -f "$CF_URL" -H "$CF_AUTH" --data '{"purge_everything":true}'
 
 # TODO test all cases.
